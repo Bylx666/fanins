@@ -1,0 +1,44 @@
+<div id="container">
+  <img src="/asset/img/404bg.jpg" alt="86不存在的战区背景">
+  <div id="bg">
+    <span id="titlenum">404</span>
+    <span id="title">不存在的页面</span>
+  </div>
+</div>
+<style>
+  #container{
+    position: relative;
+    width: 1900px;
+    height: 2692px;
+    display: flex;
+    overflow: hidden;
+  }
+  #bg{
+    position: absolute;
+    left: 680px;
+    width: 500px;
+    top: 1500px;
+    height: 800px;
+    background-image: linear-gradient(0deg, #000a 0%, #000a 30%, #000f 70%, #000f 100%);
+  }
+  #titlenum,#title{
+    position: absolute;left: 50%;transform: translateX(-50%);
+    color: #fff;
+    white-space: nowrap;
+  }
+  #titlenum{
+    height: 500px;
+    line-height: 500px;
+    font-size: 400px;
+    font-weight: 700;
+  }
+  #title{
+    top: 480px;
+    font-size: 120px;
+    color: black;
+    text-shadow: 0 0 10px #fff,0 0 20px #fff,0 0 30px #fff;
+  }
+  #title::before,#title::after{
+    content: "——";
+  }
+</style>

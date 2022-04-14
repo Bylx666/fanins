@@ -1,0 +1,239 @@
+<div id="reading-wrap">
+  <article id="content">
+    <h1>
+      你在读什么呢...
+    </h1>
+  </article>
+  <h2>发一条友善的评论：</h2>
+  <div id="reading-reviews">
+    <header>
+      <input type="text" id="input-nickname" placeholder="昵称(必写)"/>
+      <input type="text" id="input-qq" placeholder="qq号(选写)"/>
+      <button id="input-submit">发送</button>
+    </header>
+    <textarea id="input-content" placeholder="想写点啥？"></textarea>
+    <div id="reviews-list"></div>
+  </div>
+</div>
+<style>
+  #reading-wrap{
+    margin: 30px auto;
+    max-width: 860px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 1px 1px 4px #000;
+    background-image: linear-gradient(-45deg, #ddda, #fffb);
+  }
+
+  /* titles */
+  article > h1::before{
+    content: "I ";
+  }
+  article > h2::before{
+    content: "II ";
+  }
+  article > h3::before{
+    content: "III ";
+  }
+  article > h4::before{
+    content: "IV ";
+  }
+  article > h5::before{
+    content: "V ";
+  }
+  article > h6::before{
+    content: "VI ";
+  }
+  article > h1,article > h2,article > h3,article > h4,article > h5,article > h6{
+    margin: 10px 0;
+  }
+
+  /* context */
+  article > p{
+    margin: 10px 20px;
+  }
+  article > p > img{
+    margin: 20px;
+    max-width: calc(100% - 40px);
+    box-shadow: 1px 1px 3px #000;
+  }
+
+  /* 主文本外 */
+  article > img{
+    margin: 0;
+  }
+
+  /* 评论区 */
+  #reading-reviews{
+    padding: 0 30px;
+  }
+  /* 输入框 */
+  #reading-reviews > header{
+    display: flex;
+    height: 30px;
+    max-width: 100%;
+  }
+  #reading-reviews > header > input{
+    font-family: pingfang, sans-serif;
+    background-image: linear-gradient(30deg, #dede, #deff);
+    margin: 0;
+    box-shadow: 0 0 3px #000;
+    flex-grow: 1;
+    border: none;
+    outline: none;
+    border-radius: 8px;
+    margin-right: 5px;
+    padding: 0 5px;
+    font-size: 20px;
+    line-height: 30px;
+    transition: box-shadow 0.2s;
+    width: 50%;
+  }
+  #reading-reviews > header > input:focus{
+    box-shadow: 0 0 3px #360a;
+  }
+  #reading-reviews > header > button{
+    border: none;
+    background-image: linear-gradient(45deg, #efde, #ffdf);
+    box-shadow: 0 0 3px #000;
+    text-align: center;
+    padding: 0;
+    line-height: 30px;
+    font-size: 20px;
+    cursor: pointer;
+    font-family: pingfang, sans-serif;
+    width: 60px;
+    border-radius: 8px;
+    transition: opacity 0.2s;
+  }
+  #reading-reviews > header > button:active,#reading-reviews > header > button:hover{
+    opacity: 0.5;
+  }
+  #reading-reviews > textarea{
+    font-family: pingfang, sans-serif;
+    box-shadow: 0 0 3px #000;
+    background-image: linear-gradient(-15deg, #fefe, #eeef);
+    resize: none;
+    outline: none;
+    border: none;
+    margin: 5px 0;
+    width: calc(100% - 10px);
+    height: 100px;
+    border-radius: 10px;
+    padding: 0 5px;
+    transition: box-shadow 0.2s;
+  }
+  #reading-reviews > textarea:focus{
+    box-shadow: 0 0 3px #cac;
+  }
+  /* 评论列表 */
+  #reviews-list{
+    padding: 20px 0;
+    display: flex;
+    flex-direction: column;
+  }
+  #reviews-list > div{
+    margin: 5px 0;
+    border-top: 2px solid #797a;
+  }
+  #reviews-list > div > h3{
+    margin: 0;
+    height: 30px;
+    line-height: 30px;
+    font-size: 20px;
+  }
+  #reviews-list > div > h3 > small{
+    font-size: 16px;
+    color: #222a;
+  }
+  #reviews-list > div > p{
+    margin: 5px 0;
+    white-space: pre-wrap;
+    line-height: 24px;
+    font-size: 18px;
+  }
+  #reviews-list > div > span{
+    float: right;
+    font-size: 15px;
+    height: 20px;
+    line-height: 20px;
+  }
+
+  @media screen and (max-width: 900px) {
+    #reading-wrap{
+      margin: 0;
+      border-radius: 0;
+      box-shadow: none;
+    }
+    #reading-reviews{
+      padding: 0 5px;
+    }
+  }
+</style>
+<script>
+  // 获取目前文章id
+  function getArticleId() {
+    return new URLSearchParams(location.search).get('id') ||
+     localStorage.getItem('last-read');
+  }
+
+  // 更新dom中的文章
+  function refreshArticle() {
+    var articleId = getArticleId();
+    if(!articleId) return false;
+    $('reviews-list').textContent = '加载中...';
+    req(`/articles/${decodeURIComponent(articleId)}.html`, (res, status)=>{
+      $('content').innerHTML = res;
+      reloadReviews();
+    });
+  }
+  refreshArticle();
+  // 全局化函数，使其他页面可以主动刷新此dom的文章
+  window.refreshArticle = refreshArticle;
+
+  // 加载评论列表
+  function reloadReviews() {
+    var listDom = $('reviews-list');
+    req(`/api/reviews?aid=${encodeURIComponent(getArticleId())}`, (res, status)=>{
+      if(status!==200) {
+        return false;
+      }
+      var dom = '';
+      for(const review of JSON.parse(res)) {
+        dom += `<div>
+          <h3>${review.n}<small>${review.q}</small></h3>
+          <p>${review.c}</p>
+          <span>${new Date(review.t).toLocaleString()}</span>
+        </div>`
+      }
+      listDom.innerHTML = dom;
+    });
+  }
+  reloadReviews();
+  // 评论系统
+  $('input-submit').onclick = ()=> {
+    if(!$('input-nickname').value) {
+      tip('昵称是必填的！');
+      return false;
+    }
+    if(!$('input-content').value) {
+      tip('啥都不写是吧');
+      return false;
+    }
+    var postBody = {
+      aid: getArticleId(),
+      nickname: $('input-nickname').value,
+      qq: $('input-qq').value,
+      content: $('input-content').value
+    }
+    req('/api/reviews', postBody, (res, status)=>{
+      if(status===200) {
+        $('input-content').value = null;
+        tip('发送成功');
+        reloadReviews();
+      }else {
+        tip(status+': 发送失败');
+      }
+    });
+  };
+</script>

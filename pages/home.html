@@ -1,8 +1,131 @@
-<div id="home">
-  home
-</div>
+<div id="home-list"></div>
 <style>
-  #home{
-    color: red;
+  #home-list{
+    margin: 30px auto;
+    max-width: 860px;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 1px 1px 4px #000;
+    background-image: linear-gradient(0deg, #2223, #666a);
+  }
+  #home-list > div{
+    margin: 10px;
+    height: 120px;
+    border-radius: 10px;
+    box-shadow: 1px 1px 3px #000;
+    background-image: linear-gradient(45deg, #cccd, #fffe);
+    cursor: pointer;
+    transition: opacity 0.2s;
+    overflow: hidden;
+    padding: 20px 30px;
+  }
+  #home-list > div:hover,#home-list > div:active{
+    opacity: 0.7;
+  }
+  #home-list > div > h2{
+    height: 30px;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  #home-list > div.sticked > h2::before{
+    content: "置顶";
+    display: inline-block;
+    height: 20px;
+    line-height: 20px;
+    font-size: 18px;
+    color: #580a;
+    margin: 5px 10px;
+    border-radius: 5px;
+    outline: 1px solid #580a;
+  }
+  #home-list > div > p{
+    height: 60px;
+    margin: 3px 0;
+    line-height: 20px;
+    font-size: 16px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  #home-list > div > img{
+    float: right;
+    margin: 10px;
+    width: 100px;
+    height: 100px;
+    border-radius: 20px;
+    box-shadow: 0 0 3px #000;
+  }
+  #home-list > div > span{
+    display: block;
+    height: 30px;
+    line-height: 30px;
+    font-size: 15px;
+    color: #000a;
+  }
+
+  @media screen and (max-width: 900px) {
+    #home-list{
+      margin: 0;
+      padding: 5px;
+      border-radius: 0;
+      box-shadow: none;
+    }
+    #home-list > div{
+      padding: 10px 12px;
+    }
+    #home-list > div > p{
+      line-height: 15px;
+      font-size: 12px;
+    }
+    #home-list > div > h2{
+      height: 24px;
+      font-size: 18px;
+    }
+    #home-list > div.sticked > h2::before{
+      margin: 2px;
+      font-size: 15px;
+      line-height: 24px;
+    }
+    #home-list > div > img{
+      width: 60px;
+      height: 60px;
+    }
   }
 </style>
+<script>
+  req('/articles/index.json', (result)=>{
+    var list = JSON.parse(result);
+    var stickedFrag = document.createDocumentFragment()
+    var documentFrag = document.createDocumentFragment();
+
+    for(const article of list) {
+      const div = document.createElement('div');
+      if(article.cover) div.innerHTML += `
+        <img src="/articles/covers/${article.cover}" alt="${article.cover}"/>
+      `;
+      div.innerHTML += `
+        <h2>${article.title||"没起名的文章"}</h2>
+        <p>${article.abstract||"此文章无简介"}</p>
+        <span>${article.time||"公元前"} ${article.author||"无名氏"}</span>
+      `;
+      if(article.id) div.onclick = ()=> {
+        Page.jump(`reading`, true);
+        localStorage.setItem('last-read', article.id);
+        history.pushState(null, '', `/reading?id=${encodeURIComponent(article.id)}`);
+        if(window.refreshArticle) refreshArticle();
+      };
+      if(article.sticked) {
+        div.classList.add('sticked');
+        stickedFrag.append(div);
+      }else {
+        documentFrag.append(div);
+      }
+    }
+
+    $('home-list').append(stickedFrag);
+    $('home-list').append(documentFrag);
+  });
+</script>

@@ -1,15 +1,31 @@
 /**
- * get网络资源
- * @param {string} url 目标链接
- * @param {function} cb 回调函数(response, status)
+ * request网络资源
+ * 1. req(url, callback) - get
+ * 2. req(url, body, callback) - post
  */
-function get(url, cb) {
+function req() {
   var xhr = new XMLHttpRequest();
-  xhr.open('get', url);
-  xhr.send();
-  xhr.onload = ()=>{
-    cb(xhr.response, xhr.status);
-  };
+  if(typeof arguments[0]==='string') {
+    // get
+    if(typeof arguments[1]==='function') {
+      xhr.open('GET', arguments[0]);
+      xhr.send();
+      xhr.onload = ()=>{
+        arguments[1](xhr.response, xhr.status);
+      };
+      return true;
+    }else // post
+     if(typeof arguments[1]==='object') {
+      xhr.open('POST', arguments[0]);
+      xhr.setRequestHeader('content-type', 'application/json');
+      xhr.send(JSON.stringify(arguments[1]));
+      xhr.onload = ()=>{
+        arguments[2](xhr.response, xhr.status);
+      };
+      return true;
+    }
+  }
+  return false;
 }
 
 var $ = (el)=> document.getElementById(el);
@@ -21,17 +37,19 @@ var Page = {
   jump(pagepath, doNotPushHistory) {
     if(this.status===pagepath) return false;
 
+    // 修改浏览器path
+    if(!doNotPushHistory) {
+      history.pushState(null, '', '/'+pagepath);
+    }
+
     // 缓存
     var cache = this.cache[pagepath];
     if(cache) {
       $('main-container').textContent = null;
       $('main-container').append(cache);
       this.status = pagepath;
-      if(!doNotPushHistory) {
-        history.pushState(pagepath, '', '/'+pagepath);
-      }
     }else {
-      get('/pages/'+pagepath+'.html', (res, status)=>{
+      req('/pages/'+pagepath+'.html', (res)=>{
         // 把dom存在内存里
         var mainDom = document.createElement('main');
         mainDom.innerHTML = res;
@@ -50,15 +68,32 @@ var Page = {
 
         $('main-container').textContent = null;
         $('main-container').append(mainDom);
-        this.status = pagepath;
-        if(!doNotPushHistory) {
-          history.pushState(pagepath, '', '/'+pagepath);
+
+        // 处理<Script>
+        for(const script of mainDom.getElementsByTagName('script')) {
+          new Function(script.textContent).apply(mainDom);
         }
+
+        // 更新Page信息
+        this.status = pagepath;
         this.cache[pagepath] = mainDom;
       });
     }
   }
 };
+
+// 浮窗小提示
+function tip(content) {
+  if(!content) content = '究竟是谁没事想提醒你下';
+
+  var span = document.createElement('span');
+  span.textContent = content;
+  $('tip-container').append(span);
+
+  span.onanimationend = ()=> {
+    span.remove();
+  };
+}
 
 // iife of main
 void function main() {
@@ -66,9 +101,13 @@ void function main() {
   window.onload = window.onpopstate = ()=> {
     var path = location.pathname.replace('/', '') || "home";
     Page.jump(path, true);
+    if(path==='reading') {
+      if(window.refreshArticle) refreshArticle();
+    }
   };
 
   // header events
   $('header-home').onclick = ()=> Page.jump('home');
   $('header-members').onclick = ()=> Page.jump('members');
+  $('header-reading').onclick = ()=> Page.jump('reading');
 }();

@@ -1,0 +1,19 @@
+[
+  {
+    "id": "bh3-start-guide",
+    "title": "崩坏3萌新指导书",
+    "abstract": "崩坏3入坑指南，舰团的童鞋们建议读一读",
+    "time": "2022-4-14",
+    "author": "Subkey",
+    "cover": "bh3-cover.jpg"
+  },
+  {
+    "id": "intro",
+    "title": "本站介绍",
+    "abstract": "本站是崩坏3「幻想与启发」舰团的官方爱好网站，且与崩坏3官方无任何关系。幻想与启发——Fantasy and Inspiration, 分别截取两单词前三字母作为本站英文名——Fanins，代表美好与激励...",
+    "time": "2022-4-14",
+    "author": "Subkey",
+    "cover": "official-icon.png",
+    "sticked": true
+  }
+]

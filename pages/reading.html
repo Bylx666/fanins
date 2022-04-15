@@ -14,7 +14,7 @@
     </header>
     <textarea id="input-content" placeholder="想写点啥？"></textarea>
     <div id="reviews-list"></div>
-    <p>提示: 可以双击评论进行回复哦~ 双击回复方块就可以取消回复</p>
+    <p id="reviews-note">提示: 可以双击评论进行回复哦~ 双击回复方块就可以取消回复</p>
   </div>
 </div>
 <style>
@@ -251,14 +251,9 @@
 
   // 正在回复
   var replying = 0;
-  $('reviews-replying').onclick = function firstClick() {//双击清除回复
-    setTimeout(()=>{
-      $('reviews-replying').onclick = firstClick;
-    }, 300);
-    $('reviews-replying').onclick = ()=> {
-      $('reviews-replying').style.display = 'none';
-      replying = 0;
-    };
+  $('reviews-replying').ondblclick =  ()=> {
+    $('reviews-replying').style.display = 'none';
+    replying = 0;
   };
 
   // 加载评论列表
@@ -283,7 +278,10 @@
         if(editableReviews[getArticleId()][review.id]) {
           const span = document.createElement('span');
           span.textContent = '删除';
-          span.onclick = ()=> ensure(`确定要删掉${review.id}楼的评论吗` ,()=> {
+          span.onclick = (e)=> ensure(`确定要删掉${review.id}楼的评论吗` ,()=> {
+            e.stopPropagation(); // 防止点击无效
+            span.onclick = null; // 防止重复提交
+
             const postBody = {
               aid: getArticleId(),
               action: 'delete',
@@ -301,19 +299,14 @@
           });
           div.getElementsByTagName('span')[0].append(span);
         }
-        div.onclick = function firstClick() {
-          var holdTime = setTimeout(()=> {
-            div.onclick = firstClick;
-          }, 300);
-          div.onclick = ()=>{
-            $('reviews-title').scrollIntoView({behavior: 'smooth'});
-            replying = review.id;
-            $('reviews-replying').innerHTML = `
-              <h3>回复: ${replying}楼</h3>
-              <p>${review.c}</p>
-            `;
-            $('reviews-replying').style.display = 'block';
-          };
+        div.ondblclick = ()=>{
+          $('reviews-title').scrollIntoView({behavior: 'smooth'});
+          replying = review.id;
+          $('reviews-replying').innerHTML = `
+            <h3>回复: ${replying}楼</h3>
+            <p>${review.c}</p>
+          `;
+          $('reviews-replying').style.display = 'block';
         };
         documentFrag.append(div);
       }
@@ -345,9 +338,9 @@
     if($('input-qq').value) postBody.qq = $('input-qq').value;
     if(replying) postBody.reply = replying;
 
+    $('input-content').value = null;
     req('/api/reviews', postBody, (res, status)=>{
       if(status===200) {
-        $('input-content').value = null;
         tip('发送成功');
         const result = JSON.parse(res);
         if(result.reviewId) {
@@ -374,4 +367,9 @@
   $('input-qq').onchange = ()=> {
     localStorage.setItem('last-qq', $('input-qq').value);
   };
+
+  $('reviews-note').ondblclick = ()=> ensure('确定要清除localStorage(浏览器在本地的缓存记录)嘛?'+
+  '你发表的评论将无法在评论区删除，一些用于用户体验的记忆也会被删除！', ()=>{
+    localStorage.clear();
+  });
 </script>

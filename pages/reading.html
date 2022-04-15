@@ -6,7 +6,10 @@
   </article>
   <h2 id="reviews-title">发一条友善的评论：</h2>
   <div id="reading-reviews">
-    <div id="reviews-replying" title="双击以清除回复" style="display: none;"></div>
+    <div id="reviews-replying" title="双击以清除回复" style="display: none;">
+      <h3>回复: 乆乆乆楼！一定是mhy干的！</h3>
+      <p>好怪喔</p>
+    </div>
     <header>
       <input type="text" id="input-nickname" placeholder="昵称(必写)"/>
       <input type="text" id="input-qq" placeholder="qq号(选写)"/>
@@ -267,20 +270,38 @@
       var documentFrag = document.createDocumentFragment();
       for(const review of JSON.parse(res)) {
         const div = document.createElement('div');
-        div.innerHTML = `
-          <h3>${review.n}${review.q ? "<small>"+review.q+"</small>" : ""}</h3>
-          <p>${review.c}</p>
-          <span>${review.id||"乆"}楼 ${review.r?`-回复${review.r}楼 `:''}
+        const h3 = (()=> {
+          var dom = document.createElement('h3');
+          dom.textContent = review.n;
+          if(review.q) {
+            const small = document.createElement('small');
+            small.textContent = review.q;
+            dom.append(small);
+          }
+          div.append(dom);
+          return dom;
+        })();
+        const p = (()=> {
+          var dom = document.createElement('p');
+          dom.textContent = review.c;
+          div.append(dom);
+          return dom;
+        })();
+        const span = (()=> {
+          var dom = document.createElement('span');
+          dom.textContent = `${review.id||"乆"}楼 ${review.r?`-回复${review.r}楼 `:''}
             ${new Date(review.t).toLocaleString()}
-          </span>
-        `;
+          `;
+          div.append(dom);
+          return dom;
+        })();
         // 如果文章层数(id)在发过的id(editableReviews里的key)里，添加删除键
         if(editableReviews[getArticleId()][review.id]) {
-          const span = document.createElement('span');
-          span.textContent = '删除';
-          span.onclick = (e)=> ensure(`确定要删掉${review.id}楼的评论吗` ,()=> {
+          const dspan = document.createElement('span');
+          dspan.textContent = '删除';
+          dspan.onclick = (e)=> ensure(`确定要删掉${review.id}楼的评论吗` ,()=> {
             e.stopPropagation(); // 防止点击无效
-            span.onclick = null; // 防止重复提交
+            dspan.onclick = null; // 防止重复提交
 
             const postBody = {
               aid: getArticleId(),
@@ -297,20 +318,18 @@
               }
             });
           });
-          div.getElementsByTagName('span')[0].append(span);
+          span.append(dspan);
         }
         div.ondblclick = ()=>{
           $('reviews-title').scrollIntoView({behavior: 'smooth'});
           replying = review.id;
-          $('reviews-replying').innerHTML = `
-            <h3>回复: ${replying}楼</h3>
-            <p>${review.c}</p>
-          `;
+          $('reviews-replying').getElementsByTagName('h3')[0].textContent = `回复: ${replying}楼`;
+          $('reviews-replying').getElementsByTagName('p')[0].textContent = review.c;
           $('reviews-replying').style.display = 'block';
         };
         documentFrag.append(div);
       }
-      listDom.innerHTML = null;
+      listDom.textContent = null;
       listDom.append(documentFrag);
     });
     // 重置回复区

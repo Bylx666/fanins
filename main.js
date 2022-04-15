@@ -95,6 +95,22 @@ function tip(content) {
   };
 }
 
+// 确认框
+function ensure(question ,cbifYes, yesAsDefaut) {
+  $('ensure-container').style.display = 'block';
+  $('ensure-container').getElementsByTagName('p')[0].textContent = question;
+  var yesButton = $('ensure-container').getElementsByTagName('button')[1];
+  var noButton = $('ensure-container').getElementsByTagName('button')[0];
+  if(yesAsDefaut) {
+    noButton.classList.remove('default');
+    yesButton.classList.add('default');
+  }else {
+    yesButton.classList.remove('default');
+    noButton.classList.add('default');
+  }
+  yesButton.onclick = cbifYes;
+}
+
 // iife of main
 void function main() {
   // 从访问路径获取页面名
@@ -107,7 +123,27 @@ void function main() {
   };
 
   // header events
-  $('header-home').onclick = ()=> Page.jump('home');
-  $('header-members').onclick = ()=> Page.jump('members');
-  $('header-reading').onclick = ()=> Page.jump('reading');
+  $('header-home').onclick = ()=> {
+    Page.jump('home');
+    document.title = '幻想与启发';
+  };
+  $('header-members').onclick = ()=> {
+    Page.jump('members');
+    document.title = '成员';
+  };
+  $('header-reading').onclick = ()=> {
+    Page.jump('reading');
+    document.title = localStorage.getItem('last-read-title')||'读文';
+  };
+
+  // 确认框
+  $('ensure-container').onclick =
+   $('ensure-container').getElementsByTagName('div')[0]
+   .getElementsByTagName('div')[0].onclick = ()=> {
+    $('ensure-container').style.display = 'none';
+  };
+  $('ensure-container').getElementsByTagName('div')[0].onclick = e=> {
+    e.stopPropagation();
+  };
+  
 }();

@@ -98,7 +98,7 @@
 <script>
   req('/articles/index.json', (result)=>{
     var list = JSON.parse(result);
-    var stickedFrag = document.createDocumentFragment()
+    var stickedFrag = document.createDocumentFragment();
     var documentFrag = document.createDocumentFragment();
 
     for(const article of list) {
@@ -113,7 +113,9 @@
       `;
       if(article.id) div.onclick = ()=> {
         Page.jump(`reading`, true);
+        document.title = article.title||"没起名的文章";
         localStorage.setItem('last-read', article.id);
+        localStorage.setItem('last-read-title', article.title);
         history.pushState(null, '', `/reading?id=${encodeURIComponent(article.id)}`);
         if(window.refreshArticle) refreshArticle();
       };

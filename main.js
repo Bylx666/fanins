@@ -56,11 +56,10 @@ var Page = {
 
         // 如果在fetch里发现meta元素，说明是被跳转主页了，遂返回404
         if(mainDom.getElementsByTagName('meta').length>0) {
-          if(pagepath==='404') {// 防止404页面找不到导致无限get 404文件。
+          if(pagepath==='404') {// 防止找不到404页面导致无限get 404文件。
             $('main-container').textContent = '找不到你要找的地方，而且甚至404文件都找不到了...';
             return false;
-          }
-          else {
+          }else {
             this.jump('404', true);
             return false;
           }

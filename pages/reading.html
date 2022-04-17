@@ -236,7 +236,7 @@
     var articleId = getArticleId();
     if(!articleId) return false;
     $('reviews-list').textContent = '加载中...';
-    req(`/articles/${decodeURIComponent(articleId)}.html`, (res, status)=>{
+    req(`/asset/articles/${decodeURIComponent(articleId)}.html`, (res, status)=>{
       if(status===200) {
         $('content').innerHTML = res;
       }else {
@@ -309,8 +309,9 @@
               reviewId: editableReviews[getArticleId()][review.id]
             };
             req('api/reviews', postBody, (res, status)=> {
-              if(status!==200) tip('删评失败~');
-              else {
+              if(status!==200||!JSON.parse(res).deletedCount) {
+                tip('删评失败~');
+              }else {
                 delete editableReviews[review.id];
                 localStorage.setItem('sent-reviews', JSON.stringify(editableReviews));
                 tip('删评成功');

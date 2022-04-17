@@ -1,15 +1,189 @@
-<div id="header"></div>
+<canvas id="members-starsbg"></canvas>
+<div id="members-list">
+  <div>
+    <img src="/asset/members/yihan.jpg" alt="忆晗头像云瑾厨！"/>
+    <h2>忆晗</h2>
+    <p>
+      万恶的欧皇<br/>
+      qq: 783188671
+    </p>
+  </div>
+  <div>
+    <img src="/asset/members/subkey.jpg" alt="subkey头像萝莎莉娅阿琳女仆装233">
+    <h2>Subkey</h2>
+    <p>
+      本网站创作者兼自己都不觉得可爱的喜欢卖萌的憨批。我是幻想与启发的舰团长哒！<br/>
+      qq: 2822448396
+    </p>
+  </div>
+  <div>
+    <img src="/asset/members/houdezaiwu.png" alt="厚德载物头像识律看天">
+    <h2>厚德载物</h2>
+    <p>
+      想一起交流的加个好友，女孩子优先<br/>
+      qq号: 1540546240
+    </p>
+  </div>
+  <div>
+    <img src="/asset/members/akong.jpg" alt="阿空拜托符华祝你考满分！">
+    <h2>阿空</h2>
+    <p>
+      想脱非入欧..<br/>
+      qq: 2927924268
+    </p>
+  </div>
+  <div>
+    <img src="/asset/members/xuyi.jpg" alt="虚意的天空下，万叶在放鸽子">
+    <h2>虚意</h2>
+    <p>
+      摆 烂 人，欢迎崩三原神方舟同好加<br/>
+      qq：3480342637
+    </p>
+  </div>
+  <p>在同一片天空下...</p>
+</div>
 <style>
-  #header{
-    height: 50px;
-    line-height: 50px;
-    background-color: #fd0;
-    color: white;
-    font-size: 30px;
+  @keyframes starbg-fade {
+    0% {
+      opacity: 1;
+    }
+    20% {
+      opacity: 1;
+    }
+    30% {
+      opacity: 0;
+    }
+    70% {
+      opacity: 0;
+    }
+    80% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  #members-starsbg{
+    animation: starbg-fade infinite 30s linear;
+    z-index: 1;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
+  @keyframes bg-change {
+    0% {
+      background-color: #000;
+    }
+    20% {
+      background-color: #000;
+    }
+    25% {
+      background-color: #a60;
+    }
+    30% {
+      background-color: #5af;
+    }
+    40% {
+      background-color: #6cf;
+    }
+    60% {
+      background-color: #6cf;
+    }
+    70% {
+      background-color: #38f;
+    }
+    75% {
+      background-color: #a6c;
+    }
+    80% {
+      background-color: #000;
+    }
+    100% {
+      background-color: #000;
+    }
+  }
+  main{
+    background-image: none;
+    animation: bg-change infinite 30s linear;
+  }
+  #members-list{
+    position: relative;
+    z-index: 2;
+    margin: 50px auto 0 auto;
+    max-width: 860px;
+    border-radius: 10px 10px 0 0;
+    box-shadow: 1px 1px 4px #000;
+    background-image: linear-gradient(30deg, #8d6a, #5a0c);
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    background-image: url(/asset/members/bg.png);
+    background-color: #555;
+  }
+  #members-list > div{
+    box-shadow: 1px 1px 3px #000 inset;
+    border-radius: 10px;
+    margin: 8px;
+    overflow: hidden;
+    color: #fff;
+    text-shadow: 1px 1px 2px #000;
+  }
+  #members-list > div > img{
+    margin: 20px;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    box-shadow: 0 0 3px #000;
+    float: left;
+  }
+  #members-list > div > h2{
+    margin: 20px 0 0 0;
+  }
+  #members-list > div > p{
+    margin: 5px 10px;
+  }
+  /* 最后的那句在同一片天空下 */
+  #members-list > p{
+    margin: 10px 0;
+    color: #fff;
     text-align: center;
-    text-shadow: 0 0 3px #000;
+    text-shadow: 1px 1px 3px #000;
+  }
+
+  @media screen and (max-width: 900px) {
+    #members-list{
+      margin: 50px 20px 0 20px;
+    }
   }
 </style>
 <script>
-  $('header').textContent = "施工中";
+//背景画星星
+document.getElementsByTagName('main')[0].onanimationstart = ()=> {
+  var canvas = $('members-starsbg');
+  var ctx = canvas.getContext('2d');
+
+  // resize事件
+  function membersStarsbgResize() {
+    canvas.height = canvas.clientHeight;
+    canvas.width = canvas.clientWidth;
+    drawFrame();
+  }membersStarsbgResize();
+  window.addEventListener('resize', membersStarsbgResize);
+
+  // 画一帧
+  function drawFrame() {
+    var h = canvas.height;
+    var w = canvas.width;
+
+    ctx.clearRect(0,0,w,h);
+    var starCount = 500;
+    function random(num) {return Math.random()*num}
+
+    ctx.fillStyle = '#fff';
+    for(let i=0; i<starCount; ++i) {
+      ctx.fillRect(random(w), random(h), 2, 2);
+    }
+  }drawFrame();
+  setTimeout(()=>setInterval(drawFrame, 30000), 15000);
+};
 </script>

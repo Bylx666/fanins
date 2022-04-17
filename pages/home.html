@@ -96,7 +96,7 @@
   }
 </style>
 <script>
-  req('/articles/index.json', (result)=>{
+  req('/asset/articles/index.json', (result)=>{
     var list = JSON.parse(result);
     var stickedFrag = document.createDocumentFragment();
     var documentFrag = document.createDocumentFragment();
@@ -104,7 +104,7 @@
     for(const article of list) {
       const div = document.createElement('div');
       if(article.cover) div.innerHTML += `
-        <img src="/articles/covers/${article.cover}" alt="${article.cover}"/>
+        <img src="/asset/articles/covers/${article.cover}" alt="${article.cover}"/>
       `;
       div.innerHTML += `
         <h2>${article.title||"没起名的文章"}</h2>

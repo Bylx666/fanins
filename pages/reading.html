@@ -232,7 +232,7 @@
   var editableReviews = JSON.parse(localStorage.getItem('sent-reviews')||'{}');
   
   // 更新dom中的文章
-  function refreshArticle() {
+  this.pageEvent.add(function () {
     var articleId = getArticleId();
     if(!articleId) return false;
     $('reviews-list').textContent = '加载中...';
@@ -244,13 +244,10 @@
       }
       reloadReviews();
     });
-    if(editableReviews[getArticleId()]===undefined) {
-      editableReviews[getArticleId()] = {};
+    if(editableReviews[articleId]===undefined) {
+      editableReviews[articleId] = {};
     }
-  }
-  refreshArticle();
-  // 全局化函数，使其他页面可以主动刷新此dom的文章
-  window.refreshArticle = refreshArticle;
+  });
 
   // 正在回复
   var replying = 0;

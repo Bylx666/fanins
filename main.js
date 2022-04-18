@@ -46,7 +46,10 @@ var Page = {
     var cache = this.cache[pagepath];
     if(cache) {
       $('main-container').textContent = null;
-      $('main-container').append(cache);
+      $('main-container').append(cache.dom);
+      for(const func of cache.events) {
+        func();
+      }
       this.status = pagepath;
     }else {
       req('/pages/'+pagepath+'.html', (res)=>{
@@ -69,13 +72,31 @@ var Page = {
         $('main-container').append(mainDom);
 
         // 处理<Script>
+        var pageEvents = [];
+        // 为script的this设置page改变到这个页面时的事件管理器
+        Object.defineProperty(mainDom, 'pageEvent', {value: {
+          get list() {
+            return pageEvents;
+          },
+          add: (fCallback)=> {
+            // 主动执行代表第一次page到这个页面时执行
+            fCallback();
+            return pageEvents.push(fCallback);
+          },
+          rm: (fCallback)=> {
+            return pageEvents.splice(pageEvents.indexOf(fCallback), 1);
+          }
+        }});
         for(const script of mainDom.getElementsByTagName('script')) {
           new Function(script.textContent).apply(mainDom);
         }
 
         // 更新Page信息
         this.status = pagepath;
-        this.cache[pagepath] = mainDom;
+        this.cache[pagepath] = {
+          dom: mainDom,
+          events: pageEvents
+        }
       });
     }
   }

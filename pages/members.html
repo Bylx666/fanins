@@ -43,28 +43,7 @@
   <p>在同一片天空下...</p>
 </div>
 <style>
-  @keyframes starbg-fade {
-    0% {
-      opacity: 1;
-    }
-    20% {
-      opacity: 1;
-    }
-    30% {
-      opacity: 0;
-    }
-    70% {
-      opacity: 0;
-    }
-    80% {
-      opacity: 1;
-    }
-    100% {
-      opacity: 1;
-    }
-  }
   #members-starsbg{
-    animation: starbg-fade infinite 30s linear;
     z-index: 1;
     position: absolute;
     width: 100%;
@@ -157,33 +136,119 @@
   }
 </style>
 <script>
-//背景画星星
-document.getElementsByTagName('main')[0].onanimationstart = ()=> {
+//背景画星星和云
+(()=> {
   var canvas = $('members-starsbg');
   var ctx = canvas.getContext('2d');
 
-  // resize事件
+  // 绘制初始化
+  var starCount = 800;// 星星数量
+  var starSize = 2;
+  var starArr = new Int16Array(starCount * 2);
+  var starCurArr = new Int16Array(starArr);
+
+  var cloudCount = 20;// 云朵数量
+  var cloudShadowOffset = 24;
+  var cloudWidth = 240;
+  var cloudHeight = 80;
+  var cloudArr = new Int16Array(cloudCount * 2);
+  var cloudCurArr = new Int16Array(cloudArr);
+
+  var begin = 0;
+  var aniSpeed = 50;
+  var aniPeriod = 30000;//ms
+  var starAlpha = 1;
+  var cloudAlpha = 1;
+  this.pageEvent.add(()=>{
+    begin = Date.now();
+  });
+
+  // resize事件（包括一部分初始化内容）
   function membersStarsbgResize() {
     canvas.height = canvas.clientHeight;
     canvas.width = canvas.clientWidth;
-    drawFrame();
+    for(let i=0; i<starArr.length; ++i) {
+      starArr[i] = Math.floor(Math.random() * canvas.width);
+      starArr[++i] = Math.floor(Math.random() * canvas.height);
+    }
+    for(let i=0; i<cloudArr.length; ++i) {
+      cloudArr[i] = Math.floor(Math.random() * canvas.width);
+      cloudArr[++i] = Math.floor(Math.random() * canvas.height);
+    }
   }membersStarsbgResize();
-  window.addEventListener('resize', membersStarsbgResize);
+  window.addEventListener('resize', ()=>requestAnimationFrame(membersStarsbgResize));
 
-  // 画一帧
-  function drawFrame() {
+  // 动画
+  (function drawFrame() {
+
+    // ==控时器&控制动画位置==
+    var now = Date.now();
+
+    for(let i=0; i<starArr.length; i+=2) {
+      starCurArr[i] = Math.floor((starArr[i] + (now - begin) / aniSpeed) % canvas.width);
+      starCurArr[i+1] = Math.floor((starArr[i+1] + (now - begin) / aniSpeed) % canvas.height);
+    }
+    for(let i=0; i<cloudArr.length; i+=2) {
+      cloudCurArr[i] = Math.floor(
+        (cloudArr[i] + (now - begin) / aniSpeed) % (canvas.width+cloudWidth) - cloudWidth
+      );
+      cloudCurArr[i+1] = cloudArr[i+1];
+    }
+    
+    var quo = ((now - begin) % aniPeriod) / aniPeriod * 10;//quotient
+    if(quo>=8||quo<2) {
+      starAlpha = 1;
+      cloudAlpha = 0;
+    }else if(quo>=2&&quo<4) {
+      starAlpha = (4 - quo) / 2;
+      cloudAlpha = 1 - ((4 - quo) / 2);
+    }else if(quo>=4&&quo<6) {
+      starAlpha = 0;
+      cloudAlpha = 1;
+    }else if(quo>=6&&quo<8) {
+      starAlpha = 1 - ((8 - quo) / 2);
+      cloudAlpha = (8 - quo) / 2;
+    }
+
+    // ==动画帧开始==
     var h = canvas.height;
     var w = canvas.width;
 
     ctx.clearRect(0,0,w,h);
-    var starCount = 500;
-    function random(num) {return Math.random()*num}
 
+    // 画星星
+    ctx.globalAlpha = starAlpha;
     ctx.fillStyle = '#fff';
-    for(let i=0; i<starCount; ++i) {
-      ctx.fillRect(random(w), random(h), 2, 2);
+    for(let i=0; i<starArr.length; i+=2) {
+      ctx.fillRect(
+        starCurArr[i], 
+        starCurArr[i+1], 
+        starSize, 
+        starSize
+      );
     }
-  }drawFrame();
-  setTimeout(()=>setInterval(drawFrame, 30000), 15000);
-};
+    // 画云朵
+    ctx.globalAlpha = cloudAlpha;
+    ctx.fillStyle = '#aaa6';
+    for(let i=0; i<cloudArr.length; i+=2) {
+      ctx.fillRect(
+        cloudCurArr[i]+cloudShadowOffset, 
+        cloudCurArr[i+1]+cloudShadowOffset, 
+        cloudWidth, 
+        cloudHeight
+      );
+    }
+    ctx.fillStyle = '#fffa';
+    for(let i=0; i<cloudArr.length; i+=2) {
+      ctx.fillRect(
+        cloudCurArr[i], 
+        cloudCurArr[i+1], 
+        cloudWidth, 
+        cloudHeight
+      );
+    }
+
+    requestAnimationFrame(drawFrame);
+  })();
+})();
 </script>

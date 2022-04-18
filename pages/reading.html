@@ -227,18 +227,20 @@
     return new URLSearchParams(location.search).get('id') ||
      localStorage.getItem('last-read');
   }
+  var curId = '';
 
   // 获取自己发过的评论列表
   var editableReviews = JSON.parse(localStorage.getItem('sent-reviews')||'{}');
   
   // 更新dom中的文章
-  this.pageEvent.add(function () {
+  this.pageEvent.add('in', function () {
     var articleId = getArticleId();
-    if(!articleId) return false;
+    if(!articleId||articleId===curId) return false;
     $('reviews-list').textContent = '加载中...';
     req(`/asset/articles/${decodeURIComponent(articleId)}.html`, (res, status)=>{
       if(status===200) {
         $('content').innerHTML = res;
+        curId = articleId;
       }else {
         $('content').innerHTML = '你找的这篇文章根本不存在啊...';
       }

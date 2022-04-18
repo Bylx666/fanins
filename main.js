@@ -47,7 +47,10 @@ var Page = {
     if(cache) {
       $('main-container').textContent = null;
       $('main-container').append(cache.dom);
-      for(const func of cache.events) {
+      for(const func of this.cache[this.status].events.out) {
+        func();
+      }
+      for(const func of cache.events.in) {
         func();
       }
       this.status = pagepath;
@@ -72,16 +75,19 @@ var Page = {
         $('main-container').append(mainDom);
 
         // 处理<Script>
-        var pageEvents = [];
+        var pageEvents = {
+          in: [],
+          out: []
+        };
         // 为script的this设置page改变到这个页面时的事件管理器
         Object.defineProperty(mainDom, 'pageEvent', {value: {
           get list() {
             return pageEvents;
           },
-          add: (fCallback)=> {
+          add: (sType ,fCallback)=> {
             // 主动执行代表第一次page到这个页面时执行
-            fCallback();
-            return pageEvents.push(fCallback);
+            if(sType==='in') fCallback();
+            return pageEvents[sType].push(fCallback);
           },
           rm: (fCallback)=> {
             return pageEvents.splice(pageEvents.indexOf(fCallback), 1);
@@ -99,6 +105,27 @@ var Page = {
         }
       });
     }
+  }
+};
+
+var Bgm = {
+  audio: new Audio('/asset/members/musics/chittychitty.mp3'),
+  playing: false,
+  play(src, cover) {
+    if(src) this.audio.src = src;
+    if(cover) {
+      $('music-container').children[0].src = cover;
+    }
+    this.audio.play();
+    $('header-musicbg').style.display = 'block';
+    $('music-container').classList.add('playing');
+    this.playing = true;
+  },
+  pause() {
+    this.audio.pause();
+    $('header-musicbg').style.display = 'none';
+    $('music-container').classList.remove('playing');
+    this.playing = false;
   }
 };
 
@@ -137,9 +164,6 @@ void function main() {
   window.onload = window.onpopstate = ()=> {
     var path = location.pathname.replace('/', '') || "home";
     Page.jump(path, true);
-    if(path==='reading') {
-      if(window.refreshArticle) refreshArticle();
-    }
   };
 
   // header events
@@ -166,4 +190,66 @@ void function main() {
     e.stopPropagation();
   };
   
+  // 音乐播放器
+  $('music-container').onclick = ()=> {
+    if(Bgm.playing) {
+      Bgm.pause();
+    }else {
+      Bgm.play();
+    }
+  }
+  $('music-container').onmousedown = (e)=> e.preventDefault();
+  (()=>{
+    Bgm.audio.loop = true;
+    var canvas = $('header-musicbg');
+    var ctx = canvas.getContext('2d');
+
+    window.addEventListener('resize', ()=>requestAnimationFrame(()=>{
+      canvas.width = canvas.clientWidth;
+      canvas.height = canvas.clientHeight;
+    }));
+
+    var aCtx = new AudioContext();
+    var source = aCtx.createMediaElementSource(Bgm.audio);
+    var analyser = aCtx.createAnalyser();
+    source.connect(analyser);
+    analyser.connect(aCtx.destination);
+    
+    // 绘图忠
+    var bufferLength = 256;
+    analyser.fftSize = bufferLength;
+    var waveArr = new Uint8Array(bufferLength);
+
+    var gradient = (()=>{
+      var g = ctx.createLinearGradient(0,0,0,canvas.height);
+      g.addColorStop(0, '#ff0');
+      // g.addColorStop(0.33, '#00f');
+      // g.addColorStop(0.67, '#f00');
+      g.addColorStop(1, '#f65');
+      return g;
+    })();
+    (function drawFrame() {
+      analyser.getByteTimeDomainData(waveArr);
+
+      var w = canvas.width;
+      var h = canvas.height;
+      var sliceW = w / bufferLength;
+
+      ctx.clearRect(0, 0, w, h);
+
+      ctx.beginPath();
+      for(let i=0; i<bufferLength; ++i) {
+        var sliceH = waveArr[i] / 128 * h / 2;
+
+        ctx.rect(sliceW*i, h - sliceH, sliceW, sliceH);
+      }
+      ctx.fillStyle = gradient;
+      ctx.globalAlpha = 0.6;
+      ctx.fill();
+
+      requestAnimationFrame(drawFrame);
+    })();
+  })();
+  
+
 }();

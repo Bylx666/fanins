@@ -15,6 +15,9 @@
       本网站创作者兼自己都不觉得可爱的喜欢卖萌的憨批。我是幻想与启发的舰团长哒！<br/>
       qq: 2822448396
     </p>
+    <span onclick="Bgm.play('/asset/members/musics/chittychitty.mp3', '/asset/members/musics/chittychitty.jpg')">
+      ♪チキチキバンバン
+    </span>
   </div>
   <div>
     <img src="/asset/members/houdezaiwu.png" alt="厚德载物头像识律看天">
@@ -40,14 +43,22 @@
       qq：3480342637
     </p>
   </div>
+  <div>
+    <img src="/asset/members/yangguangdananhai.jpg" alt="阳光？大男孩的诚哥头像">
+    <h2>阳光大男孩</h2>
+    <p>
+      我是原p~<br/>
+      qq: 1913329728
+    </p>
+  </div>
   <p>在同一片天空下...</p>
 </div>
 <style>
   #members-starsbg{
-    z-index: 1;
     position: absolute;
     width: 100%;
     height: 100%;
+    pointer-events: none;
   }
   @keyframes bg-change {
     0% {
@@ -86,8 +97,6 @@
     animation: bg-change infinite 30s linear;
   }
   #members-list{
-    position: relative;
-    z-index: 2;
     margin: 50px auto 0 auto;
     max-width: 860px;
     border-radius: 10px 10px 0 0;
@@ -96,7 +105,7 @@
     padding: 10px;
     display: flex;
     flex-direction: column;
-    background-image: url(/asset/members/bg.png);
+    background-image: url(/asset/members/bg1.png);
     background-color: #555;
   }
   #members-list > div{
@@ -120,6 +129,9 @@
   }
   #members-list > div > p{
     margin: 5px 10px;
+  }
+  #members-list > div > span{
+    float: right;
   }
   /* 最后的那句在同一片天空下 */
   #members-list > p{
@@ -159,8 +171,15 @@
   var aniPeriod = 30000;//ms
   var starAlpha = 1;
   var cloudAlpha = 1;
-  this.pageEvent.add(()=>{
+  var currentAnimationFrameId = 0;
+  this.pageEvent.add('in', ()=>{
     begin = Date.now();
+    drawFrame();
+    window.onresize = ()=> requestAnimationFrame(membersStarsbgResize);
+  });
+  this.pageEvent.add('out', ()=>{
+    cancelAnimationFrame(currentAnimationFrameId);
+    window.onresize = null;
   });
 
   // resize事件（包括一部分初始化内容）
@@ -176,11 +195,9 @@
       cloudArr[++i] = Math.floor(Math.random() * canvas.height);
     }
   }membersStarsbgResize();
-  window.addEventListener('resize', ()=>requestAnimationFrame(membersStarsbgResize));
 
   // 动画
-  (function drawFrame() {
-
+  function drawFrame() {
     // ==控时器&控制动画位置==
     var now = Date.now();
 
@@ -248,7 +265,7 @@
       );
     }
 
-    requestAnimationFrame(drawFrame);
-  })();
+    currentAnimationFrameId = requestAnimationFrame(drawFrame);
+  };
 })();
 </script>

@@ -38,7 +38,7 @@
     line-height: 20px;
     font-size: 18px;
     color: #580a;
-    margin: 5px 10px;
+    margin: 0 5px;
     border-radius: 5px;
     outline: 1px solid #580a;
   }
@@ -112,12 +112,11 @@
         <span>${article.time||"公元前"} ${article.author||"无名氏"}</span>
       `;
       if(article.id) div.onclick = ()=> {
-        Page.jump(`reading`, true);
         document.title = article.title||"没起名的文章";
         localStorage.setItem('last-read', article.id);
         localStorage.setItem('last-read-title', article.title);
         history.pushState(null, '', `/reading?id=${encodeURIComponent(article.id)}`);
-        if(window.refreshArticle) refreshArticle();
+        Page.jump(`reading`, true);
       };
       if(article.sticked) {
         div.classList.add('sticked');

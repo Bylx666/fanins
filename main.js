@@ -223,8 +223,6 @@ void function main() {
     var gradient = (()=>{
       var g = ctx.createLinearGradient(0,0,0,canvas.height);
       g.addColorStop(0, '#ff0');
-      // g.addColorStop(0.33, '#00f');
-      // g.addColorStop(0.67, '#f00');
       g.addColorStop(1, '#f65');
       return g;
     })();

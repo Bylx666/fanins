@@ -268,7 +268,7 @@
       }
 
       var documentFrag = document.createDocumentFragment();
-      for(const review of JSON.parse(res)) {
+      for(const review of res) {
         const div = document.createElement('div');
         const h3 = (()=> {
           var dom = document.createElement('h3');
@@ -309,7 +309,7 @@
               reviewId: editableReviews[getArticleId()][review.id]
             };
             req('api/reviews', postBody, (res, status)=> {
-              if(status!==200||!JSON.parse(res).deletedCount) {
+              if(status!==200||!res.deletedCount) {
                 tip('删评失败~');
               }else {
                 delete editableReviews[review.id];
@@ -317,7 +317,7 @@
                 tip('删评成功');
                 reloadReviews();
               }
-            });
+            }, 'json');
           });
           span.append(dspan);
         }
@@ -332,7 +332,7 @@
       }
       listDom.textContent = null;
       listDom.append(documentFrag);
-    });
+    }, 'json');
     // 重置回复区
     replying = 0;
     $('reviews-replying').style.display = 'none';
@@ -359,10 +359,9 @@
     if(replying) postBody.reply = replying;
 
     $('input-content').value = null;
-    req('/api/reviews', postBody, (res, status)=>{
+    req('/api/reviews', postBody, (result, status)=>{
       if(status===200) {
         tip('发送成功');
-        const result = JSON.parse(res);
         if(result.reviewId) {
           editableReviews[getArticleId()][result.id] = result.reviewId;
           localStorage.setItem('sent-reviews', JSON.stringify(editableReviews))
@@ -371,7 +370,7 @@
       }else {
         tip(status+': 发送失败');
       }
-    });
+    }, 'json');
   };
 
   // 2个输入框的记忆

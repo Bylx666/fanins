@@ -96,8 +96,7 @@
   }
 </style>
 <script>
-  req('/asset/articles/index.json', (result)=>{
-    var list = JSON.parse(result);
+  req('/asset/articles/index.json', (list)=>{
     var stickedFrag = document.createDocumentFragment();
     var documentFrag = document.createDocumentFragment();
 
@@ -128,5 +127,5 @@
 
     this.querySelector('#home-list').append(stickedFrag);
     this.querySelector('#home-list').append(documentFrag);
-  });
+  }, 'json');
 </script>

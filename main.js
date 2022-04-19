@@ -1,13 +1,14 @@
 /**
  * request网络资源
- * 1. req(url, callback) - get
- * 2. req(url, body, callback) - post
+ * 1. req(url, callback, resType) - get
+ * 2. req(url, body, callback, resType) - post
  */
 function req() {
   var xhr = new XMLHttpRequest();
   if(typeof arguments[0]==='string') {
     // get
     if(typeof arguments[1]==='function') {
+      if(typeof arguments[2]==='string') xhr.responseType = arguments[2];
       xhr.open('GET', arguments[0]);
       xhr.send();
       xhr.onload = ()=>{
@@ -16,6 +17,7 @@ function req() {
       return true;
     }else // post
      if(typeof arguments[1]==='object') {
+      if(typeof arguments[3]==='string') xhr.responseType = arguments[3];
       xhr.open('POST', arguments[0]);
       xhr.setRequestHeader('content-type', 'application/json');
       xhr.send(JSON.stringify(arguments[1]));
@@ -109,12 +111,61 @@ var Page = {
 };
 
 var Bgm = {
-  audio: new Audio('/asset/members/musics/chittychitty.mp3'),
+  audio: new Audio(
+    localStorage.getItem('last-play-music')
+    ||'/asset/members/musics/chittychitty.mp3'
+  ),
   playing: false,
-  play(src, cover) {
-    if(src) this.audio.src = src;
+  lrcTimeLine: [],
+  loadLrc(src) {
+    var lrcDom = $('music-container').querySelector('div').querySelector('div');
+    var df = document.createDocumentFragment();
+    req(src, (res, status)=> {
+      if(status!==200) return false;
+      try{
+        var lrcArr = res.split('\n');
+        var timeReg = /\[(.*)\]/;
+        this.lrcTimeLine = [];
+        for(const str of lrcArr) {
+          const keyArr = timeReg.exec(str);
+          if(!keyArr) continue;
+
+          const key = (()=>{
+            var timeArr = keyArr[1].split(':');
+            var m = parseFloat(timeArr[0]);
+            var s = parseFloat(timeArr[1]);
+            return m * 60 + s;
+          })();
+          const val = str.replace(timeReg, '').trim();
+          this.lrcTimeLine.push(key);
+          
+          (()=>{
+            var dom = document.createElement('span');
+            dom.textContent = val;
+            df.append(dom);
+          })();
+        }
+        lrcDom.textContent = null;
+        lrcDom.append(df);
+      }catch(e) {
+        throw new Error(`歌词'${src}'解析失败: ${e.message}`);
+      }
+    });
+  },
+  play(srcPrefix ,src, cover, lrc) {
+    if(src) {
+      this.audio.src = srcPrefix + src;
+      localStorage.setItem('last-play-music', srcPrefix + src);
+    }
     if(cover) {
-      $('music-container').children[0].src = cover;
+      $('music-container').children[0].src = srcPrefix + cover;
+      localStorage.setItem('last-play-music-cover', srcPrefix + cover);
+    }
+    if(lrc) {
+      this.loadLrc(srcPrefix + lrc);
+      $('music-container').querySelector('div').style.display = null;
+    }else {
+      $('music-container').querySelector('div').style.display = 'none';
     }
     this.audio.play();
     $('header-musicbg').style.display = 'block';
@@ -145,7 +196,7 @@ function tip(content) {
 // 确认框
 function ensure(question ,cbifYes, yesAsDefaut) {
   $('ensure-container').style.display = 'block';
-  $('ensure-container').getElementsByTagName('p')[0].textContent = question;
+  $('ensure-container').querySelector('p').textContent = question;
   var yesButton = $('ensure-container').getElementsByTagName('button')[1];
   var noButton = $('ensure-container').getElementsByTagName('button')[0];
   if(yesAsDefaut) {
@@ -182,11 +233,11 @@ void function main() {
 
   // 确认框
   $('ensure-container').onclick =
-   $('ensure-container').getElementsByTagName('div')[0]
-   .getElementsByTagName('div')[0].onclick = ()=> {
+   $('ensure-container').querySelector('div')
+   .querySelector('div').onclick = ()=> {
     $('ensure-container').style.display = 'none';
   };
-  $('ensure-container').getElementsByTagName('div')[0].onclick = e=> {
+  $('ensure-container').querySelector('div').onclick = e=> {
     e.stopPropagation();
   };
   
@@ -199,6 +250,10 @@ void function main() {
     }
   }
   $('music-container').onmousedown = (e)=> e.preventDefault();
+  if(localStorage.getItem('last-play-music-cover')) {
+    $('music-container').querySelector('img').src =
+     localStorage.getItem('last-play-music-cover');
+  }
   (()=>{
     Bgm.audio.loop = true;
     var canvas = $('header-musicbg');
@@ -245,9 +300,21 @@ void function main() {
       ctx.globalAlpha = 0.6;
       ctx.fill();
 
+      var lrcDom = $('music-container').querySelector('div').querySelector('div');
+      for(let i=0; i<Bgm.lrcTimeLine.length; ++i) {
+        lrcDom.children[i].style.color = null;
+        if(!Bgm.lrcTimeLine[i+1]) break;
+        if(Bgm.audio.currentTime > Bgm.lrcTimeLine[i]&&
+          Bgm.audio.currentTime < Bgm.lrcTimeLine[i+1]) 
+        {
+          lrcDom.children[i].style.color = '#da8'
+          lrcDom.style.transform = `translateY(${85 - lrcDom.children[i].offsetTop}px)`;
+          break;
+        }
+      }
+
       requestAnimationFrame(drawFrame);
     })();
   })();
-  
 
 }();

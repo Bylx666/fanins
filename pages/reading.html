@@ -222,12 +222,13 @@
   }
 </style>
 <script>
+  var $ = (el)=> this.querySelector('#'+el);
   // 获取目前文章id
   function getArticleId() {
     return new URLSearchParams(location.search).get('id') ||
      localStorage.getItem('last-read');
   }
-  var curId = '';
+  var curId = '';// current Id
 
   // 获取自己发过的评论列表
   var editableReviews = JSON.parse(localStorage.getItem('sent-reviews')||'{}');

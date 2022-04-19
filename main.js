@@ -308,7 +308,11 @@ void function main() {
           Bgm.audio.currentTime < Bgm.lrcTimeLine[i+1]) 
         {
           lrcDom.children[i].style.color = '#da8'
-          lrcDom.style.transform = `translateY(${85 - lrcDom.children[i].offsetTop}px)`;
+          lrcDom.style.transform = `translateY(${
+            ($('music-container').querySelector('div').clientHeight
+             - lrcDom.children[i].clientHeight) / 2
+             - lrcDom.children[i].offsetTop
+            }px)`;
           break;
         }
       }

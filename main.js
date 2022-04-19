@@ -164,7 +164,7 @@ var Bgm = {
     if(lrc) {
       this.loadLrc(srcPrefix + lrc);
       $('music-container').querySelector('div').style.display = null;
-    }else {
+    }else if(lrc===null) {
       $('music-container').querySelector('div').style.display = 'none';
     }
     this.audio.play();

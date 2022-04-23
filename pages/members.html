@@ -78,11 +78,23 @@
       色香水-神山羊
     </span>
   </div>
+  <div>
+    <img src="/asset/members/oacu.jpg" alt="oacu?">
+    <h2>OACU</h2>
+    <p>
+      在梦中幻想着完美的生活<br/>
+      qq: 737503685
+    </p>
+    <span onclick="Bgm.play('/asset/members/musics/nenene.', 'mp3', 'jpg', 'lrc')">
+      ねぇねぇねぇ。-ピノキオピー / 鏡音リン / 初音ミク
+    </span>
+  </div>
   <p>在同一片天空下...</p>
 </div>
 <style>
   #members-starsbg{
     position: absolute;
+    pointer-events: none;
     width: 100%;
     height: 100%;
   }
@@ -123,7 +135,6 @@
     animation: bg-change infinite 30s linear;
   }
   #members-list{
-    position: relative;
     margin: 50px auto 0 auto;
     max-width: 860px;
     border-radius: 10px 10px 0 0;
@@ -278,6 +289,7 @@
         starSize
       );
     }
+
     // 画云朵
     ctx.globalAlpha = cloudAlpha;
     ctx.fillStyle = '#aaa6';
@@ -289,6 +301,7 @@
         cloudHeight
       );
     }
+
     ctx.fillStyle = '#fffa';
     for(let i=0; i<cloudArr.length; i+=2) {
       ctx.fillRect(

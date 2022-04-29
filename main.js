@@ -256,6 +256,8 @@ void function main() {
   }
   (()=>{
     Bgm.audio.loop = true;
+
+    if(!AudioContext) return false;
     var canvas = $('header-musicbg');
     var ctx = canvas.getContext('2d');
 

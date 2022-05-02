@@ -1,7 +1,7 @@
 /* global */
 @font-face {
   font-family: pingfang;
-  src: url(asset/pingfang.woff) format('woff');
+  src: url(/asset/pingfang.woff) format('woff');
 }
 body{
   margin: 0;
@@ -26,12 +26,6 @@ body > header,footer{
   position: relative;
   display: flex;
   color: #fff;
-}
-body > header > canvas{
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
 }
 body > header > h1{
   margin: 10px 10px 10px 40px;
@@ -166,6 +160,17 @@ body > footer > span{
   height: 120px;
   opacity: 1;
 }
+@keyframes music-cover-playing {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+#music-container.playing > img{
+  animation: music-cover-playing infinite 3s linear;
+}
 /* 歌词 */
 #music-container > div{
   position: fixed;
@@ -189,16 +194,15 @@ body > footer > span{
   text-align: center;
   margin: 2px;
 }
-@keyframes music-cover-playing {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-#music-container.playing > img{
-  animation: music-cover-playing infinite 3s linear;
+/* 音频特效 */
+#music-container > canvas{
+  z-index: 9;
+  position: fixed;
+  right: 0;
+  top: 40px;
+  width: 150px;
+  height: 150px;
+  pointer-events: none;
 }
 
 /* main frame */

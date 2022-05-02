@@ -1,0 +1,123 @@
+[
+  {
+    "avatar": "yihan.jpg",
+    "name": "忆晗",
+    "intro": "万恶的欧皇",
+    "qq": "783188671",
+    "music": {
+      "name": "lemon-米津玄师",
+      "id": "lemon",
+      "play": "'mp3', 'jpg', 'lrc'"
+    }
+  },{
+    "avatar": "subkey.jpg",
+    "name": "Subkey",
+    "intro": "本网站创作者兼自己都不觉得可爱的喜欢卖萌的憨批。我是幻想与启发的舰团长哒！",
+    "qq": "2822448396",
+    "music": {
+      "name": "チキチキバンバン-QUEENDOM",
+      "id": "chittychitty",
+      "play": "'mp3', 'jpg', 'lrc'"
+    }
+  },{
+    "avatar": "houdezaiwu.png",
+    "name": "厚德载物",
+    "intro": "想一起交流的加个好友，女孩子优先",
+    "qq": "1540546240",
+    "music": {
+      "name": "谭sir-亚久津",
+      "id": "tansir",
+      "play": "'mp3', 'jpg', 'lrc'"
+    }
+  },{
+    "avatar": "akong.jpg",
+    "name": "阿空",
+    "intro": "想脱非入欧..",
+    "qq": "2927924268",
+    "music": {
+      "name": "神様はじめました-ハナエ",
+      "id": "kamisamahajimashita",
+      "play": "'mp3', 'jpg', 'lrc'"
+    }
+  },{
+    "avatar": "xuyi.jpg",
+    "name": "虚意",
+    "intro": "摆 烂 人，欢迎崩三原神方舟同好加",
+    "qq": "3480342637",
+    "music": {
+      "name": "Moonlight Sonata-TSAR",
+      "id": "moonlightSonata",
+      "play": "'mp3', 'jpg', null"
+    }
+  },{
+    "avatar": "yangguangdananhai.jpg",
+    "name": "阳光大男孩",
+    "intro": "我是原p~",
+    "qq": "1913329728",
+    "music": {
+      "name": "不要说话-陈奕迅",
+      "id": "buyaoshuohua",
+      "play": "'mp3', 'jpg', 'lrc'"
+    }
+  },{
+    "avatar": "guhuipaimeng.jpg",
+    "name": "骨灰级派蒙",
+    "intro": "嗨害嗨",
+    "qq": "3381074364",
+    "music": {
+      "name": "色香水-神山羊",
+      "id": "sexiangshui",
+      "play": "'mp3', 'jpg', 'lrc'"
+    }
+  },{
+    "avatar": "oacu.jpg",
+    "name": "OACU",
+    "intro": "在梦中幻想着完美的生活",
+    "qq": "737503685",
+    "music": {
+      "name": "ねぇねぇねぇ。-ピノキオピー / 鏡音リン / 初音ミク",
+      "id": "nenene",
+      "play": "'mp3', 'jpg', 'lrc'"
+    }
+  },{
+    "avatar": "tianshangzhisen.jpg",
+    "name": "天上之森",
+    "intro": "成分堪比元素周期表",
+    "qq": "2641725325",
+    "music": {
+      "name": "虹-真空ホロウ",
+      "id": "niji",
+      "play": "'mp3', 'jpg', 'lrc'"
+    }
+  },{
+    "avatar": "wakuwaku.jpg",
+    "name": "哇酷哇酷",
+    "intro": "各种批发商",
+    "qq": "3508539221",
+    "music": {
+      "name": "優しさの理由-ChouCho",
+      "id": "yasashi",
+      "play": "'mp3', 'jpg', 'lrc'"
+    }
+  },{
+    "avatar": "yihan.jpg",
+    "name": "白风",
+    "intro": "一个兴趣使然的苍蓝星",
+    "qq": "1635478796",
+    "music": {
+      "name": "DEAR MY WAKER-米倉千尋",
+      "id": "dearMyWaker",
+      "play": "'mp3', 'jpg', 'lrc'"
+    }
+  },{
+    "avatar": "chunjingzhaoyan.png",
+    "name": "春景召烟",
+    "intro": "一个从武侠迷变成二次元的人",
+    "qq": "2456054683",
+    "music": {
+      "name": "That's The Way It Is-Daniel Lanois",
+      "id": "thatIsTheWay",
+      "play": "'mp3', 'png', 'lrc'"
+    }
+  }
+]

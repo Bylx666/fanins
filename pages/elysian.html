@@ -1,0 +1,31 @@
+<video id="elysia" src="/asset/elysian/1.mp4" autoplay muted loop></video>
+<style>
+  #elysia{
+    width: 100%;
+    vertical-align: middle;
+  }
+</style>
+<script>
+  var video = this.querySelector('#elysia');
+  // 暂停音乐缅怀
+  var wasPlaying = false;
+  this.pageEvent.add('in', ()=>{
+    video.play();
+    if(Bgm.playing) {
+      wasPlaying = true;
+      Bgm.pause();
+    }else {
+      wasPlaying = false;
+    }
+  });
+  this.pageEvent.add('out', ()=>{
+    video.pause();
+    if(wasPlaying) Bgm.play();
+  });
+  
+  var curIndex = 1;
+  this.querySelector('#elysia').onclick = ()=>{
+    if(++curIndex>6) curIndex = 1;
+    video.src = '/asset/elysian/'+curIndex+'.mp4'
+  };
+</script>

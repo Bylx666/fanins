@@ -168,13 +168,11 @@ var Bgm = {
       $('music-container').querySelector('div').style.display = 'none';
     }
     this.audio.play();
-    $('header-musicbg').style.display = 'block';
     $('music-container').classList.add('playing');
     this.playing = true;
   },
   pause() {
     this.audio.pause();
-    $('header-musicbg').style.display = 'none';
     $('music-container').classList.remove('playing');
     this.playing = false;
   }
@@ -258,13 +256,12 @@ void function main() {
     Bgm.audio.loop = true;
 
     if(!AudioContext) return false;
-    var canvas = $('header-musicbg');
+    var canvas = $('music-container').querySelector('canvas');
     var ctx = canvas.getContext('2d');
 
-    window.addEventListener('resize', ()=>requestAnimationFrame(()=>{
-      canvas.width = canvas.clientWidth;
-      canvas.height = canvas.clientHeight;
-    }));
+    var sideLen = 150;
+    var innerLen = 120;
+    canvas.width = canvas.height = sideLen;
 
     var aCtx = new AudioContext();
     var source = aCtx.createMediaElementSource(Bgm.audio);
@@ -276,33 +273,38 @@ void function main() {
     var bufferLength = 256;
     analyser.fftSize = bufferLength;
     var waveArr = new Uint8Array(bufferLength);
-
     var gradient = (()=>{
-      var g = ctx.createLinearGradient(0,0,0,canvas.height);
-      g.addColorStop(0, '#ff0');
-      g.addColorStop(1, '#f65');
+      var l = sideLen/2;
+      var g = ctx.createRadialGradient(l,l,l,l,l,innerLen/2);
+      g.addColorStop(0, '#d8a');
+      g.addColorStop(1, '#a30');
       return g;
     })();
+
     (function drawFrame() {
       analyser.getByteTimeDomainData(waveArr);
 
-      var w = canvas.width;
-      var h = canvas.height;
-      var sliceW = w / bufferLength;
+      var s = sideLen;// side length
+      var w = (s - innerLen);// 可用宽度(width)
+      var sliceDeg = 360 / bufferLength;
 
-      ctx.clearRect(0, 0, w, h);
+      ctx.clearRect(0, 0, s, s);
 
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = gradient;
       ctx.beginPath();
-      for(let i=0; i<bufferLength; ++i) {
-        var sliceH = waveArr[i] / 128 * h / 2;
-
-        ctx.rect(sliceW*i, h - sliceH, sliceW, sliceH);
+      for(let i=0; i<bufferLength; i+=8) {
+        const radian = sliceDeg * i * Math.PI / 180;
+        ctx.lineTo(
+          Math.floor((s + Math.sin(radian) * (innerLen + (waveArr[i] - 128) / 128 * w)) / 2),
+          Math.floor((s - Math.cos(radian) * (innerLen + (waveArr[i] - 128) / 128 * w)) / 2)
+        );
       }
-      ctx.fillStyle = gradient;
-      ctx.globalAlpha = 0.6;
-      ctx.fill();
+      ctx.closePath();
+      ctx.stroke();
 
-      var lrcDom = $('music-container').querySelector('div').querySelector('div');
+      // 更新一次歌词
+      var lrcDom = $('music-container').querySelector('div').children[0];
       for(let i=0; i<Bgm.lrcTimeLine.length; ++i) {
         lrcDom.children[i].style.color = null;
         if(!Bgm.lrcTimeLine[i+1]) break;

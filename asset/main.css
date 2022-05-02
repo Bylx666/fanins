@@ -68,6 +68,19 @@ body > footer > span{
   line-height: 24px;
   color: #fffa;
 }
+body > footer > p{
+  margin: 2px;
+  text-align: center;
+}
+body > footer > p > span{
+  font-size: 12px;
+}
+body > footer > p > span::after{
+  content: '|';
+}
+body > footer > p > span:last-child::after{
+  content: none;
+}
 
 /* tip提示 */
 @keyframes tip-fade {

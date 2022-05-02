@@ -1,31 +1,58 @@
-<video id="elysia" src="/asset/elysian/1.mp4" autoplay muted loop></video>
+<div id="video-container">
+  <video src="/asset/elysian/1.mp4" autoplay muted loop></video>
+</div>
 <style>
-  #elysia{
+  #video-container > video{
     width: 100%;
     vertical-align: middle;
   }
+  @media screen and (max-width: 900px) {
+    #video-container > video{
+      width: auto;
+      height: 100%;
+    }
+  }
 </style>
 <script>
-  var video = this.querySelector('#elysia');
+  var getVideo = ()=> {
+    return this.querySelector('#video-container').querySelector('video');
+  }
   // 暂停音乐缅怀
   var wasPlaying = false;
   this.pageEvent.add('in', ()=>{
-    video.play();
+    $('music-container').style.display = 'none';
+    getVideo().play();
     if(Bgm.playing) {
       wasPlaying = true;
       Bgm.pause();
+      tip('音乐暂停，请好好的看着她');
     }else {
       wasPlaying = false;
     }
+    document.title = '亲爱的爱莉希雅';
   });
   this.pageEvent.add('out', ()=>{
-    video.pause();
+    $('music-container').style.display = null;
+    getVideo().pause();
     if(wasPlaying) Bgm.play();
   });
   
   var curIndex = 1;
-  this.querySelector('#elysia').onclick = ()=>{
-    if(++curIndex>6) curIndex = 1;
-    video.src = '/asset/elysian/'+curIndex+'.mp4'
+  var videos = [];
+  var videoCount = 6;
+  for(let i = 0; i<videoCount; ++i) {
+    const video = document.createElement('video');
+    video.src = '/asset/elysian/'+(i+1).toString()+'.mp4';
+    video.muted = true;
+    video.loop = true;
+    videos.push(video);
+  }
+
+  var vc = this.querySelector('#video-container');
+  vc.onclick = ()=>{
+    if(++curIndex>videoCount-1) curIndex = 0;
+    vc.textContent = '';
+    vc.append(videos[curIndex]);
+    getVideo().play();
   };
 </script>

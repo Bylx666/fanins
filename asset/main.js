@@ -45,13 +45,15 @@ var Page = {
     }
 
     // 缓存
+    if(this.cache[this.status]) {
+      for(const func of this.cache[this.status].events.out) {
+        func();
+      }
+    }
     var cache = this.cache[pagepath];
     if(cache) {
       $('main-container').textContent = null;
       $('main-container').append(cache.dom);
-      for(const func of this.cache[this.status].events.out) {
-        func();
-      }
       for(const func of cache.events.in) {
         func();
       }

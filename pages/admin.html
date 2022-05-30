@@ -1,0 +1,49 @@
+<h1>管理员页面</h1>
+<hr>
+<textarea id="psw" placeholder="管理员密码"></textarea>
+<h2>删评</h2>
+<select id="del-review-list"></select>
+<h3>search</h3>
+<input id="del-review-id" placeholder="楼"/>
+<input id="del-review-t" placeholder="时间点"/>
+<input id="del-review-c" placeholder="内容"/>
+<p class="act" id="del-review-act">执行</p>
+<p>note: 最简单使用方法，在删评两字上面的密码框输入管理密码，然后选择要删除评论的文章，在search第一栏层数里输入要删评的层数就能删除了。当弹出对话框显示 deleteCount: 1 就代表成功。</p>
+
+<style>
+  .act{
+    color: #518;
+    background-color: #fffa;
+    cursor: pointer;
+    margin: 3px;
+    border-radius: 5px;
+  }
+  .act:hover,.act:active{
+    opacity: 0.5;
+  }
+</style>
+<script>
+var $ = (el)=> this.querySelector('#'+el);
+//
+req('/asset/articles/index.json', (list)=>{
+  for(const arti of list) {
+    const opt = document.createElement('option');
+    opt.value = arti.id;
+    opt.textContent = arti.title;
+    $('del-review-list').append(opt);
+  }
+}, 'json');
+$('del-review-act').onclick = ()=> {
+  var postBody = {
+    action: 'delete',
+    aid: $('del-review-list').value
+  };
+  if($('del-review-id').value) postBody.id = $('del-review-id').value;
+  if($('del-review-t').value) postBody.id = $('del-review-t').value;
+  if($('del-review-c').value) postBody.id = $('del-review-c').value;
+  req('/api/reviews?admin='+$('psw').value, postBody, (res)=>{
+    ensure(res);
+  });
+}
+
+</script>

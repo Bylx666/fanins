@@ -4,6 +4,7 @@
     {"source": "/members", "destination": "/"},
     {"source": "/reading", "destination": "/"},
     {"source": "/elysian", "destination": "/"},
+    {"source": "/admin", "destination": "/"},
     {"source": "/404", "destination": "/"},
     {"source": "/api/(.*)", "destination": "/404"}
   ]

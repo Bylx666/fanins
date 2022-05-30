@@ -15,12 +15,17 @@ module.exports = (request, response)=>{
     return false;
   }
 
+  var isAdmin = false;
+  if(process.env.admin&&request.query.admin===process.env.admin) {
+    isAdmin = true;
+  }
+
   client.connect(err => {
     var collection = client.db("reviews").collection(aid);
     if(request.method==='GET') {
       collection.find().sort({t: -1}).toArray().then((result)=>{
         if(request.query) {// 管理员显示_id
-          if(process.env.admin&&request.query.admin===process.env.admin) {
+          if(isAdmin) {
             response.json(result);
             return true;
           }
@@ -34,15 +39,33 @@ module.exports = (request, response)=>{
       if(!request.body) return false;
       if(request.body.action) {
         if(request.body.action==='delete') {// 删评行为！
-          const reviewId = request.body.reviewId;
-          if(!reviewId) {
-            response.status(403);
-            response.json({error: '未提供删除目标id'});
-            return false;
+          if(isAdmin) {
+            let search = {};
+            if(request.body.id) {
+              search.id = parseInt(request.body.id);
+            }else if(request.body.t) {
+              search.t = request.body.t
+            }else if(request.body.c) {
+              search.c = request.body.c
+            }else {
+              response.status(403);
+              response.json({error: 'Search Parameters Required.'});
+              return false;
+            }
+            return collection.deleteOne(search).then((result)=>{
+              response.json(result);
+            });
+          }else {
+            const reviewId = request.body.reviewId;
+            if(!reviewId) {
+              response.status(403);
+              response.json({error: '未提供删除目标id'});
+              return false;
+            }
+            collection.deleteOne({_id: ObjectId(reviewId)}).then((result)=>{
+              response.json(result);
+            });
           }
-          collection.deleteOne({_id: ObjectId(reviewId)}).then((result)=>{
-            response.json(result);
-          });
         }else {
           response.status(400);
           response.json({error: '你要做什么？'});

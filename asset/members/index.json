@@ -6,8 +6,7 @@
     "qq": "783188671",
     "music": {
       "name": "lemon-米津玄师",
-      "id": "lemon",
-      "play": "'mp3', 'jpg', 'lrc'"
+      "id": "lemon"
     }
   },{
     "avatar": "subkey.jpg",
@@ -16,8 +15,7 @@
     "qq": "2822448396",
     "music": {
       "name": "チキチキバンバン-QUEENDOM",
-      "id": "chittychitty",
-      "play": "'mp3', 'jpg', 'lrc'"
+      "id": "chittychitty"
     }
   },{
     "avatar": "houdezaiwu.png",
@@ -26,8 +24,7 @@
     "qq": "1540546240",
     "music": {
       "name": "谭sir-亚久津",
-      "id": "tansir",
-      "play": "'mp3', 'jpg', 'lrc'"
+      "id": "tansir"
     }
   },{
     "avatar": "akong.jpg",
@@ -36,8 +33,7 @@
     "qq": "2927924268",
     "music": {
       "name": "神様はじめました-ハナエ",
-      "id": "kamisamahajimashita",
-      "play": "'mp3', 'jpg', 'lrc'"
+      "id": "kamisamahajimashita"
     }
   },{
     "avatar": "xuyi.jpg",
@@ -47,7 +43,7 @@
     "music": {
       "name": "Moonlight Sonata-TSAR",
       "id": "moonlightSonata",
-      "play": "'mp3', 'jpg', null"
+      "lrc": null
     }
   },{
     "avatar": "yangguangdananhai.jpg",
@@ -56,8 +52,7 @@
     "qq": "1913329728",
     "music": {
       "name": "不要说话-陈奕迅",
-      "id": "buyaoshuohua",
-      "play": "'mp3', 'jpg', 'lrc'"
+      "id": "buyaoshuohua"
     }
   },{
     "avatar": "guhuipaimeng.jpg",
@@ -66,8 +61,7 @@
     "qq": "3381074364",
     "music": {
       "name": "色香水-神山羊",
-      "id": "sexiangshui",
-      "play": "'mp3', 'jpg', 'lrc'"
+      "id": "sexiangshui"
     }
   },{
     "avatar": "oacu.jpg",
@@ -76,8 +70,7 @@
     "qq": "737503685",
     "music": {
       "name": "ねぇねぇねぇ。-ピノキオピー / 鏡音リン / 初音ミク",
-      "id": "nenene",
-      "play": "'mp3', 'jpg', 'lrc'"
+      "id": "nenene"
     }
   },{
     "avatar": "tianshangzhisen.jpg",
@@ -86,8 +79,7 @@
     "qq": "2641725325",
     "music": {
       "name": "虹-真空ホロウ",
-      "id": "niji",
-      "play": "'mp3', 'jpg', 'lrc'"
+      "id": "niji"
     }
   },{
     "avatar": "wakuwaku.jpg",
@@ -96,8 +88,7 @@
     "qq": "3508539221",
     "music": {
       "name": "優しさの理由-ChouCho",
-      "id": "yasashi",
-      "play": "'mp3', 'jpg', 'lrc'"
+      "id": "yasashi"
     }
   },{
     "avatar": "baifeng.jpg",
@@ -106,8 +97,7 @@
     "qq": "1635478796",
     "music": {
       "name": "DEAR MY WAKER-米倉千尋",
-      "id": "dearMyWaker",
-      "play": "'mp3', 'jpg', 'lrc'"
+      "id": "dearMyWaker"
     }
   },{
     "avatar": "chunjingzhaoyan.png",
@@ -117,7 +107,7 @@
     "music": {
       "name": "That's The Way It Is-Daniel Lanois",
       "id": "thatIsTheWay",
-      "play": "'mp3', 'png', 'lrc'"
+      "cover": "png"
     }
   }
 ]

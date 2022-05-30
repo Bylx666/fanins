@@ -1,9 +1,14 @@
+var $ = (el)=> document.getElementById(el);
+
+var currentRequestCount = 0;
 /**
  * request网络资源
  * 1. req(url, callback, resType) - get
  * 2. req(url, body, callback, resType) - post
  */
 function req() {
+  $('loading-symbol').style.display = 'block';
+  ++currentRequestCount;
   var xhr = new XMLHttpRequest();
   if(typeof arguments[0]==='string') {
     // get
@@ -13,6 +18,9 @@ function req() {
       xhr.send();
       xhr.onload = ()=>{
         arguments[1](xhr.response, xhr.status);
+        if(--currentRequestCount===0) {
+          $('loading-symbol').style.display = 'none';
+        }
       };
       return true;
     }else // post
@@ -23,14 +31,15 @@ function req() {
       xhr.send(JSON.stringify(arguments[1]));
       xhr.onload = ()=>{
         arguments[2](xhr.response, xhr.status);
+        if(--currentRequestCount===0) {
+          $('loading-symbol').style.display = 'none';
+        }
       };
       return true;
     }
   }
   return false;
 }
-
-var $ = (el)=> document.getElementById(el);
 
 // 跳转页面
 var Page = {
@@ -141,11 +150,9 @@ var Bgm = {
           const val = str.replace(timeReg, '').trim();
           this.lrcTimeLine.push(key);
           
-          (()=>{
-            var dom = document.createElement('span');
-            dom.textContent = val;
-            df.append(dom);
-          })();
+          var dom = document.createElement('span');
+          dom.textContent = val;
+          df.append(dom);
         }
         lrcDom.textContent = null;
         lrcDom.append(df);
@@ -155,6 +162,7 @@ var Bgm = {
     });
   },
   play(srcPrefix ,src, cover, lrc) {
+    srcPrefix = srcPrefix+'.';
     if(src) {
       this.audio.src = srcPrefix + src;
       localStorage.setItem('last-play-music', srcPrefix + src);

@@ -100,7 +100,6 @@
   #members-list > div > span::before{
     content: '♪';
   }
-  /* 最后的那句在同一片天空下 */
 
   @media screen and (max-width: 900px) {
     #members-list{
@@ -119,12 +118,18 @@ req('/asset/members/index.json', (res)=>{
       <p>
         ${member.intro}${member.qq ? `<br/>qq: ${member.qq}` : ''}
       </p>
-      <span onclick="
-        Bgm.play('/asset/members/musics/${member.music.id}.', ${member.music.play})"
-      >
-        ${member.music.name}
-      </span>
     `;
+
+    const musicButton = document.createElement('span');
+    musicButton.onclick = ()=> {
+      var media = member.music.media===undefined?'mp3':member.music.media;
+      var cover = member.music.cover===undefined?'jpg':member.music.cover;
+      var lrc = member.music.lrc===undefined?'lrc':member.music.lrc;
+      Bgm.play('/asset/members/musics/'+member.music.id, media, cover, lrc);
+    };
+    musicButton.textContent = member.music.name;
+    div.append(musicButton);
+
     frag.append(div);
   }
   this.querySelector('#members-list').append(frag);

@@ -55,7 +55,11 @@ module.exports = (request, response)=>{
         var content = request.body.content || "被黑客动了手脚的句子";
         var reply = request.body.reply;
         collection.findOne({},{sort: {t: -1}}).then((result)=>{
-          id = result.id + 1 || 1;
+          if(result) {
+            id = result.id + 1 || 1;
+          }else {
+            id = 1;
+          }
           var insertObject = {
             id: id,
             t: Date.now(), 

@@ -27,11 +27,12 @@
   #home-list > div > h2{
     height: 30px;
     margin: 0;
+    font-weight: 500;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  #home-list > div.sticked > h2::before{
+  #home-list > div.top > h2::before{
     content: "置顶";
     display: inline-block;
     height: 20px;
@@ -84,23 +85,24 @@
       height: 24px;
       font-size: 18px;
     }
-    #home-list > div.sticked > h2::before{
+    #home-list > div.top > h2::before{
       margin: 2px;
       font-size: 15px;
       line-height: 24px;
     }
     #home-list > div > img{
-      width: 60px;
-      height: 60px;
+      margin: 5px;
+      width: 80px;
+      height: 80px;
     }
   }
 </style>
 <script>
   req('/asset/articles/index.json', (list)=>{
-    var stickedFrag = document.createDocumentFragment();
+    var topFrag = document.createDocumentFragment();
     var documentFrag = document.createDocumentFragment();
 
-    for(const article of list) {
+    for(const article of list.reverse()) {
       const div = document.createElement('div');
       if(article.cover) div.innerHTML += `
         <img src="/asset/articles/covers/${article.cover}" alt="${article.cover}"/>
@@ -117,15 +119,15 @@
         history.pushState(null, '', `/reading?id=${encodeURIComponent(article.id)}`);
         Page.jump(`reading`, true);
       };
-      if(article.sticked) {
-        div.classList.add('sticked');
-        stickedFrag.append(div);
+      if(article.top) {
+        div.classList.add('top');
+        topFrag.append(div);
       }else {
         documentFrag.append(div);
       }
     }
 
-    this.querySelector('#home-list').append(stickedFrag);
+    this.querySelector('#home-list').append(topFrag);
     this.querySelector('#home-list').append(documentFrag);
   }, 'json');
 </script>

@@ -1,7 +1,7 @@
 <div id="reading-wrap">
   <article id="content">
     <h1>
-      你在读什么呢...
+      不知道你要读什么文章 >~<
     </h1>
   </article>
   <h2 id="reviews-title">发一条友善的评论：</h2>
@@ -30,6 +30,16 @@
     background-image: linear-gradient(-45deg, #ddda, #fffb);
   }
 
+  article > p{
+    text-indent: 16px;
+  }
+  article > img, article > p > img{
+    margin: 20px;
+    max-width: calc(100% - 40px);
+    box-shadow: 1px 1px 3px #000;
+    display: block;
+  }
+
   /* titles */
   article > h1::before{
     content: "I ";
@@ -51,22 +61,6 @@
   }
   article > h1,article > h2,article > h3,article > h4,article > h5,article > h6{
     margin: 10px 0;
-  }
-
-  /* context */
-  article > p{
-    margin: 10px 20px;
-  }
-  article > p > img{
-    margin: 20px;
-    max-width: calc(100% - 40px);
-    box-shadow: 1px 1px 3px #000;
-    display: block;
-  }
-
-  /* 主文本外 */
-  article > img{
-    margin: 0;
   }
 
   /* 评论区 */
@@ -206,8 +200,9 @@
   }
   /* 评论区提示 */
   #reading-reviews > p{
-    margin: 5px;
     text-align: center;
+    margin: 0;
+    cursor: pointer;
   }
 
   @media screen and (max-width: 900px) {
@@ -223,10 +218,80 @@
 </style>
 <script>
   var $ = (el)=> this.querySelector('#'+el);
+
+  // 解析arti文件
+  function loadArti(res) {
+    var r = res.replace(/&/g, '&amp;')
+               .replace(/</g, '&lt;')
+               .replace(/>/g, '&gt;')
+               .replace(/"/g, '&quot;')
+               .replace(/\r/g, '').split('\n');
+    var result = '';
+
+    var pCount = 0;
+    for(let i = 0; i < r.length; ++i) {
+      const statem = r[i];
+      if(statem.indexOf('h1: ')===0) {
+        result += '<h1>'+statem.replace('h1: ', '')+'</h1>';
+        continue;
+      }
+      if(statem.indexOf('h2: ')===0) {
+        result += '<h2>'+statem.replace('h2: ', '')+'</h2>';
+        continue;
+      }
+      if(statem.indexOf('h3: ')===0) {
+        result += '<h3>'+statem.replace('h3: ', '')+'</h3>';
+        continue;
+      }
+      if(statem.indexOf('h4: ')===0) {
+        result += '<h4>'+statem.replace('h4: ', '')+'</h4>';
+        continue;
+      }
+      if(statem.indexOf('h5: ')===0) {
+        result += '<h5>'+statem.replace('h5: ', '')+'</h5>';
+        continue;
+      }
+      if(statem.indexOf('h6: ')===0) {
+        result += '<h6>'+statem.replace('h6: ', '')+'</h6>';
+        continue;
+      }
+      if(statem.indexOf('img: ')===0) {
+        const args = statem.replace('img: ', '').split(':');
+        result += `<img src="/asset/articles/imgs/${curId}/${args[0]}" alt="${args[1]||'无法加载'+args[0]+'的图片'}"/>`;
+        continue;
+      }
+
+      if(pCount > 0) {
+        if(statem==='') {
+          --pCount;
+          result += statem+'</p>';
+        }else {
+          result += statem+'<br/>';
+        };
+        continue;
+      }else {
+        if(statem==='') {
+          result += '<br/>';
+        }else {
+          ++pCount;
+          result += '<p>'+statem+'<br/>';
+        }
+        continue;
+      }
+    }
+    if(pCount>0) {
+      for(let i = 0; i < pCount; ++i) {
+        result += '</p>';
+      }
+    }
+    $('content').innerHTML = result;
+  }
+
   // 获取目前文章id
   function getArticleId() {
-    return new URLSearchParams(location.search).get('id') ||
+    var id = new URLSearchParams(location.search).get('id') ||
      localStorage.getItem('last-read');
+    return id?decodeURIComponent(id):null;
   }
   var curId = '';// current Id
 
@@ -236,16 +301,26 @@
   // 更新dom中的文章
   this.pageEvent.add('in', function () {
     var articleId = getArticleId();
+    if(!articleId) {
+      $('reviews-title').style.display = 'none';
+      $('reading-reviews').style.display = 'none';
+    }else {
+      history.pushState(null, '', `/reading?id=${encodeURIComponent(articleId)}`);
+    }
     if(!articleId||articleId===curId) return false;
-    $('reviews-list').textContent = '加载中...';
-    req(`/asset/articles/${decodeURIComponent(articleId)}.html`, (res, status)=>{
+
+    curId = articleId;
+    reloadReviews();
+    req(`/asset/articles/${articleId}.arti`, (res, status)=>{
       if(status===200) {
-        $('content').innerHTML = res;
-        curId = articleId;
+        loadArti(res);
+        $('reviews-title').style.display = null;
+        $('reading-reviews').style.display = null;
       }else {
         $('content').innerHTML = '你找的这篇文章根本不存在啊...';
+        $('reviews-title').style.display = 'none';
+        $('reading-reviews').style.display = 'none';
       }
-      reloadReviews();
     });
     if(editableReviews[articleId]===undefined) {
       editableReviews[articleId] = {};
@@ -262,8 +337,14 @@
   // 加载评论列表
   function reloadReviews() {
     var listDom = $('reviews-list');
-    req(`/api/reviews?aid=${encodeURIComponent(getArticleId())}`, (res, status)=>{
+    if(!curId) return false;
+    $('reviews-list').textContent = '加载中...';
+    req(`/api/reviews?aid=${curId}`, (res, status)=>{
       if(status!==200) {
+        return false;
+      }
+      if(res.length===0) {
+        $('reviews-list').textContent = '一条评论也木有';
         return false;
       }
 
@@ -296,7 +377,7 @@
           return dom;
         })();
         // 如果文章层数(id)在发过的id(editableReviews里的key)里，添加删除键
-        if(editableReviews[getArticleId()][review.id]) {
+        if(editableReviews[curId][review.id]) {
           const dspan = document.createElement('span');
           dspan.textContent = '删除';
           dspan.onclick = (e)=> ensure(`确定要删掉${review.id}楼的评论吗` ,()=> {
@@ -304,9 +385,9 @@
             dspan.onclick = null; // 防止重复提交
 
             const postBody = {
-              aid: getArticleId(),
+              aid: curId,
               action: 'delete',
-              reviewId: editableReviews[getArticleId()][review.id]
+              reviewId: editableReviews[curId][review.id]
             };
             req('api/reviews', postBody, (res, status)=> {
               if(status!==200||!res.deletedCount) {
@@ -337,7 +418,6 @@
     replying = 0;
     $('reviews-replying').style.display = 'none';
   }
-  reloadReviews();
   
   // 表单提交
   $('input-submit').onclick = ()=> {
@@ -351,7 +431,7 @@
     }
 
     var postBody = {
-      aid: getArticleId(),
+      aid: curId,
       nickname: $('input-nickname').value,
       content: $('input-content').value
     }
@@ -363,7 +443,7 @@
       if(status===200) {
         tip('发送成功');
         if(result.reviewId) {
-          editableReviews[getArticleId()][result.id] = result.reviewId;
+          editableReviews[curId][result.id] = result.reviewId;
           localStorage.setItem('sent-reviews', JSON.stringify(editableReviews))
         }
         reloadReviews();

@@ -230,7 +230,25 @@
 
     var pCount = 0;
     for(let i = 0; i < r.length; ++i) {
-      const statem = r[i];
+      let statem = r[i];
+
+      // 处理内联
+      const aReg = /&lt;a .*? .*?&gt;/g;
+      if(statem.match(aReg)) {
+        for(const a of statem.match(aReg)) {
+          const v = a.split(' ');
+          statem = statem.replace(a, `<a target="_blank" href="${v[1]}">${v[2].substring(0, v[2].length-4)}</a>`);
+        }
+      }
+      const bReg = /&lt;b .*?&gt;/g;
+      if(statem.match(bReg)) {
+        for(const b of statem.match(bReg)) {
+          const v = b.split(' ');
+          statem = statem.replace(b, `<b>${v[1].substring(0, v[1].length-4)}</b>`);
+        }
+      }
+
+      // 处理语句
       if(statem.indexOf('h1: ')===0) {
         result += '<h1>'+statem.replace('h1: ', '')+'</h1>';
         continue;
@@ -261,6 +279,7 @@
         continue;
       }
 
+      // 处理正文
       if(pCount > 0) {
         if(statem==='') {
           --pCount;

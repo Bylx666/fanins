@@ -3,10 +3,10 @@
 <textarea id="psw" placeholder="管理员密码"></textarea>
 <h2>删评</h2>
 <select id="del-review-list"></select>
-<h3>search</h3>
-<input id="del-review-id" placeholder="楼"/>
-<input id="del-review-t" placeholder="时间点"/>
-<input id="del-review-c" placeholder="内容"/>
+<div id="del-review-inputs">
+  <input id="del-review-inputs-id" placeholder="楼层数"/>
+  <input id="del-review-inputs-c" placeholder="内容"/>
+</div>
 <p class="act" id="del-review-act">执行</p>
 <p>note: 最简单使用方法，在删评两字上面的密码框输入管理密码，然后选择要删除评论的文章，在search第一栏层数里输入要删评的层数就能删除了。当弹出对话框显示 deleteCount: 1 就代表成功。</p>
 
@@ -24,26 +24,67 @@
 </style>
 <script>
 var $ = (el)=> this.querySelector('#'+el);
-//
+
+// === 文章管理 Start ===
 req('/asset/articles/index.json', (list)=>{
+
   for(const arti of list) {
+
     const opt = document.createElement('option');
     opt.value = arti.id;
     opt.textContent = arti.title;
     $('del-review-list').append(opt);
+
   }
+
 }, 'json');
+
+$('del-review-inputs-id').oninput = $('del-review-inputs-c').oninput = (e)=> {
+
+  if(e.target.value) {
+
+    for(let i = 0; i < $('del-review-inputs').children.length; ++i) {
+
+      $('del-review-inputs').children[i].disabled = true;
+
+    }
+
+    e.target.disabled = false;
+    
+  }else {
+
+    for(let i = 0; i < $('del-review-inputs').children.length; ++i) {
+
+      $('del-review-inputs').children[i].disabled = false;
+
+    }
+
+  };
+
+};
+
 $('del-review-act').onclick = ()=> {
+
   var postBody = {
     action: 'delete',
     aid: $('del-review-list').value
   };
-  if($('del-review-id').value) postBody.id = $('del-review-id').value;
-  if($('del-review-t').value) postBody.id = $('del-review-t').value;
-  if($('del-review-c').value) postBody.id = $('del-review-c').value;
+
+  if($('del-review-inputs-id').value) postBody.id = $('del-review-inputs-id').value;
+  else if($('del-review-inputs-c').value) postBody.c = $('del-review-inputs-c').value;
+  
   req('/api/reviews?admin='+$('psw').value, postBody, (res)=>{
-    ensure(res);
-  });
+
+    if(res.error) {
+      ensure('删除失败: '+res.error);
+      return false;
+    }
+
+    ensure(`删除了${res.deletedCount}条数据。`);
+    
+  }, 'json');
+
 }
+// === 文章管理 End ===
 
 </script>

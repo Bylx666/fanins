@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="zh-hans">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fanins Admin</title>
+  <link rel="shortcut icon" href="/favicon.png" type="image/png">
+</head>
+<body>
+  <header>幻想与启发管理员<input id="psw" type="text" placeholder="password"/><svg id="modori" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" onclick="location.href = '/';"><path d="M894.976 574.464q0 78.848-29.696 148.48t-81.408 123.392-121.856 88.064-151.04 41.472q-5.12 1.024-9.216 1.536t-9.216 0.512l-177.152 0q-17.408 0-34.304-6.144t-30.208-16.896-22.016-25.088-8.704-29.696 8.192-29.696 21.504-24.576 29.696-16.384 33.792-6.144l158.72 1.024q54.272 0 102.4-19.968t83.968-53.76 56.32-79.36 20.48-97.792q0-49.152-18.432-92.16t-50.688-76.8-75.264-54.784-93.184-26.112q-2.048 0-2.56 0.512t-2.56 0.512l-162.816 0 0 80.896q0 17.408-13.824 25.6t-44.544-10.24q-8.192-5.12-26.112-17.92t-41.984-30.208-50.688-36.864l-51.2-38.912q-15.36-12.288-26.624-22.016t-11.264-24.064q0-12.288 12.8-25.6t29.184-26.624q18.432-15.36 44.032-35.84t50.688-39.936 45.056-35.328 28.16-22.016q24.576-17.408 39.936-7.168t16.384 30.72l0 81.92 162.816 0q5.12 0 10.752 1.024t10.752 2.048q79.872 8.192 149.504 41.984t121.344 87.552 80.896 123.392 29.184 147.456z"></path></svg></header>
+  <div id="c">
+    <nav>
+      <p>菜单</p>
+    </nav>
+    <main><h1 id="main-title">好家伙</h2></main>
+  </div>
+  <div id="b"></div>
+
+  <style>
+
+body {
+  margin: 0;
+  overflow: hidden;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+input {
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0 0 3px #000;
+  transition: box-shadow 0.2s;
+  outline: none;
+  padding: 5px;
+}
+input:hover, input:focus {
+  box-shadow: 0 0 3px #aaa;
+}
+input:disabled:hover, input:disabled:focus {
+  box-shadow: 0 0 3px #da3;
+}
+
+/* 自制框架开始 */
+.subUI-select {
+  display: inline-block;
+  position: relative;
+}
+.subUI-select > span {
+  line-height: 30px;
+  border-radius: 5px;
+  background-color: #fff;
+  box-shadow: 0 0 3px #000;
+  white-space: nowrap;
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+  cursor: pointer;
+  padding: 5px 25px 5px 5px;
+}
+.subUI-select > span:hover {
+  box-shadow: 0 0 3px #aaa;
+}
+.subUI-select > svg {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  width: 20px;
+  transition: transform 0.2s;
+  pointer-events: none;
+}
+.subUI-select > div {
+  position: absolute;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  width: 160px;
+  transition: max-height 0.2s;
+  border-radius: 5px;
+  box-shadow: 0 0 3px #000;
+}
+.subUI-select > div > span {
+  display: block;
+  margin: 2px;
+  cursor: pointer;
+  padding: 3px;
+  border-radius: 5px;
+}
+.subUI-select > div > span:hover{
+  box-shadow: 0 0 3px #000;
+}
+/* 框架结束 */
+
+header {
+  width: 100%;
+  height: 50px;
+  background-color: #7da;
+  padding: 0 30px;
+  line-height: 50px;
+  font-size: 24px;
+  color: #fff;
+  text-shadow: 1px 1px 3px #000;
+}
+
+#modori {
+  margin: 5px;
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  right: 0;
+  fill: #fff;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+#modori:hover {
+  opacity: 0.6;
+}
+@keyframes modori-rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+#modori.busy {
+  animation: modori-rotate 1s linear infinite;
+}
+
+header > input {
+  position: absolute;
+  left: 240px;
+  top: 10px;
+  height: 20px;
+  width: 70px;
+  text-align: center;
+  line-height: 20px;
+  font-size: 15px;
+}
+
+#c {
+  margin: 3px 0 0 0;
+  display: flex;
+  height: calc(100vh - 56px);
+}
+
+#c > nav {
+  display: flex;
+  flex-direction: column;
+  width: 160px;
+  background-color: #7da;
+  color: #fff;
+  text-shadow: 0 0 3px #000;
+  padding-top: 10px;
+  line-height: 36px;
+  font-size: 24px;
+  text-align: center;
+}
+#c > nav > p {
+  margin: 10px 0;
+}
+#c > nav > span {
+  width: 100%;
+  margin: 2px 0;
+  height: 36px;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #0000;
+  transition: background-color 0.2s;
+}
+#c > nav > span:hover {
+  background-color: #0005;
+}
+
+#c > main {
+  margin: 20px 27px;
+  width: 100%;
+  background-color: #fe8;
+  border-radius: 30px;
+  overflow: hidden;
+  padding: 30px;
+}
+#c > main > h2 {
+  margin: 10px 0;
+}
+
+#del-review > .subUI-select, #del-review > input {
+  margin: 10px;
+}
+#del-review > p {
+  margin: 5px 10px 24px 0;
+}
+#del-review > span {
+  background-color: #7da;
+  color: #fff;
+  padding: 15px 30px;
+  height: 30px;
+  line-height: 30px;
+  font-size: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 3px #000;
+  margin: 10px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+#del-review > span:hover {
+  opacity: 0.6;
+}
+
+#c > nav, #c > main, header {
+  opacity: 0.5;
+  transition: opacity 0.2s;
+  box-shadow: 0 0 3px #000;
+}
+#c > nav:hover, #c > main:hover, header:hover {
+  opacity: 1;
+}
+
+#b {
+  z-index: -10;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url(/asset/drawbg.jpg);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+@media screen and (max-width: 900px) {
+
+  #b {
+    background-image: url(/asset/drawbgmobile.jpg);
+  }
+
+}
+  </style>
+  <script>
+
+// Simple Utils
+function $(el) {return document.getElementById(el)};
+
+var reqCount = 0;
+function req() {
+
+  ++reqCount;
+  $('modori').classList.add('busy');
+
+  var xhr = new XMLHttpRequest();
+
+  if(typeof arguments[0]==='string') {
+
+    var cb;
+    // get
+    if(typeof arguments[1]==='function') {
+
+      if(typeof arguments[2]==='string') xhr.responseType = arguments[2];
+      xhr.open('GET', arguments[0]);
+      xhr.send();
+      cb = arguments[1];
+      
+    }else // post
+     if(typeof arguments[1]==='object') {
+
+      if(typeof arguments[3]==='string') xhr.responseType = arguments[3];
+      xhr.open('POST', arguments[0]);
+      xhr.setRequestHeader('content-type', 'application/json');
+      xhr.send(JSON.stringify(arguments[1]));
+      cb = arguments[2];
+
+    }
+
+    xhr.onload = ()=>{
+
+      if(--reqCount===0) $('modori').classList.remove('busy');
+      cb(xhr.response, xhr.status);
+
+    };
+
+  }
+
+}
+
+// Subkey UI Lib
+var subUI = {
+  createSelect(optionList, optionNameList) {
+
+    var select = document.createElement('div');
+    select.value = '';
+    select.className = 'subUI-select';
+
+    var selectButton = document.createElement('span');
+    selectButton.onclick = (e)=> {
+      e.stopPropagation();
+
+      options.style.maxHeight = document.documentElement.clientHeight - options.getBoundingClientRect().top + 'px';
+      options.style.overflow = 'hidden auto';
+      svg.style.transform = 'rotate(-180deg)';
+
+      setTimeout(()=>{
+        var reclickEvent = ()=> {
+
+          options.style.maxHeight = '0';
+          options.style.overflow = 'hidden';
+          svg.style.transform = 'rotate(0deg)';
+          document.removeEventListener('click', reclickEvent);
+
+        };
+        document.addEventListener('click', reclickEvent);
+      }, 50);
+      
+    };
+    select.append(selectButton);
+
+    var svg = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
+    svg.setAttribute('viewBox', '0 0 1024 1024');
+    svg.innerHTML = '<path d="M490.666667 601.6L797.866667 298.666667l59.733333 59.733333-302.933333 302.933333-59.733334 64-59.733333-59.733333L128 358.4 187.733333 298.666667l302.933334 302.933333z"></path>';
+    svg.setAttribute('width', '20');
+    svg.setAttribute('height', '20');
+    select.append(svg);
+
+    var options = document.createElement('div');
+    options.style.maxHeight = '0';
+    options.style.overflow = 'hidden';
+    for(let i = 0; i < optionList.length; ++i) {
+
+      const opt = document.createElement('span');
+      const name = optionNameList&&optionNameList[i] ? optionNameList[i] : optionList[i];
+      opt.textContent = name;
+      const selectEvent = ()=> {
+
+        selectButton.textContent = name;
+        select.value = optionList[i];
+
+      };
+      opt.onclick = selectEvent;
+      options.append(opt);
+
+      if(i===0) selectEvent();
+
+    }
+    select.append(options);
+
+    return select;
+
+  }
+}
+
+// header的密码值
+var psw = $('psw').value;
+
+$('psw').onchange = ()=> {
+
+  psw = $('psw').value;
+
+};
+
+// 左侧菜单
+var navList = ['删除评论', 'test1', 'test2'];
+var mainTitle = document.createElement('h2');
+
+for(let i = 0; i < navList.length; ++i) {
+
+  const span = document.createElement('span');
+  span.textContent = navList[i];
+  span.onclick = ()=> {
+
+    main.textContent = null;
+    mainTitle.textContent = navList[i];
+    main.append(mainTitle);
+    main.append(dfs[i]);
+
+  };
+
+  $('c').querySelector('nav').append(span);
+  
+}
+
+// === 页面生成 Start ===
+var main = document.querySelector('main');
+var dfs = [];
+
+// 第一页删除评论
+var delReview = (()=> {
+
+  var df = document.createElement('div');
+  df.id = 'del-review';
+
+  var list;
+  req('/asset/articles/index.json', (res)=>{
+
+    var valueArr = [];
+    var nameArr = [];
+
+    for(let i = 0; i < res.length; ++i) {
+
+      valueArr.push(res[i].id);
+      nameArr.push(res[i].title);
+
+    }
+
+    list = subUI.createSelect(valueArr, nameArr);
+    df.insertAdjacentElement('afterbegin', list);
+
+  }, 'json');
+
+  var inputId = document.createElement('input');
+  inputId.oninput = ()=> {
+
+    if(!inputId.value) inputC.disabled = false;
+    else inputC.disabled = true;
+
+  };
+  inputId.placeholder = '楼层数';
+  inputId.style.width = '60px';
+  df.append(inputId);
+
+  var inputC = document.createElement('input');
+  inputC.oninput = ()=> {
+
+    if(!inputC.value) inputId.disabled = false;
+    else inputId.disabled = true;
+
+  };
+  inputC.placeholder = '评论内容';
+  inputC.style.width = '240px';
+  df.append(inputC);
+
+  var info = document.createElement('p');
+  df.append(info);
+
+  var test = document.createElement('span');
+  test.textContent = '查询此评论';
+  test.onclick = ()=> {
+    req(`/api/reviews?aid=${list.value}`, (res)=> {
+
+      var hasResult = false;
+
+      for(let i = 0; i < res.length; ++i) {
+
+        if(res[i].id===parseInt(inputId.value)||res[i].c===inputC.value) {
+
+          info.style.color = '#000';
+          info.textContent = `${res[i].n} 在${(new Date(res[i].t)).toLocaleString()}发表的"${res[i].c}"，在${res[i].id}楼${res[i].q?'，留下了自己的qq: '+res[i].q:'。'}`;
+          hasResult = true;
+          break;
+
+        }
+        
+      }
+
+      if(!hasResult) {
+
+        info.style.color = '#f35';
+        info.textContent = '无查询结果';
+        
+      }
+      
+    }, 'json');
+  };
+  df.append(test);
+
+  var del = document.createElement('span');
+  del.style.backgroundColor = '#f75';
+  del.textContent = '直接删除';
+  del.onclick = ()=> {
+
+    var postBody = {
+      action: 'delete',
+      aid: list.value,
+      admin: psw
+    }
+    if(inputId.value) postBody.id = inputId.value;
+    else if(inputC) postBody.c = inputC.value;
+
+    req('/api/reviews', postBody, (res)=> {
+
+      if(res.error) {
+
+        info.style.color = '#f35';
+        info.textContent = res.error;
+        return false;
+
+      }
+
+      if(res.deletedCount === 1) {
+
+        info.style.color = '#000';
+        info.textContent = '删除成功。';
+
+      }else {
+
+        info.style.color = '#f35';
+        info.textContent = '未找到查询的评论，删除失败。';
+
+      }
+      
+    }, 'json');
+
+  };
+  df.append(del);
+
+  main.innerHTML = '<h2>' + navList[0] + '</h2>';
+  main.append(df);
+
+  dfs.push(df);
+
+})();
+
+// === 页面生成 End ===
+
+  </script>
+</body>
+</html>

@@ -40,93 +40,108 @@ module.exports = (req, res)=> {
   }
   else if(req.method==='POST') {
 
-    if(req.body.admin!==process.env.admin) {
+    var reqBody = '';
+    req.on('data', (chunk)=> {
 
-      res.status(403);
-      res.json({error: '你管理员密码寄了'});
-      return false;
+      reqBody += chunk;
 
-    }
+    });
+    req.on('end', ()=> {
 
-    var method = '';
-    var body = {};
+      reqBody = JSON.parse(reqBody);
 
-    if(req.body.action==='put') {
-
-      method = 'PUT';
-      if(!req.body.content) {
+      if(reqBody.admin!==process.env.admin) {
 
         res.status(403);
-        res.json({error: '要写上 content 哦~base64版的。'});
+        res.json({error: '你管理员密码寄了'});
         return false;
 
       }
-      body.content = req.body.content;
 
-    }else if(req.body.action==='del') {
+      var method = '';
+      var body = {};
 
-      method = 'DELETE';
+      if(reqBody.action==='put') {
 
-    }else {
+        method = 'PUT';
+        if(!reqBody.content) {
 
-      res.status(403);
-      res.json({error: '未知行为。是否在 body 中设置正确的 action ?'});
-      return false;
+          res.status(403);
+          res.json({error: '要写上 content 哦~base64版的。'});
+          return false;
 
-    }
+        }
+        body.content = reqBody.content;
 
-    if(!req.body.message) {
+      }else if(reqBody.action==='del') {
 
-      res.status(403);
-      res.json({error: '需要在 body 中提供 message'});
-      return false;
+        method = 'DELETE';
 
-    }
-    body.message = req.body.message;
+      }else {
 
-    if(!req.body.path) {
+        res.status(403);
+        res.json({error: '未知行为。是否在 body 中设置正确的 action ?'});
+        return false;
 
-      res.status(403);
-      res.json({error: '你文件路径呢？？'});
-      return false;
-
-    }
-    
-    if(req.body.sha) {
-
-      body.sha = req.body.sha;
-
-    }
-
-    const ghReq = https.request({
-      hostname: 'api.github.com',
-      port: 443,
-      path: '/repos/Bylx666/bed/contents/'+req.body.path,
-      method: method,
-      headers: {
-        "User-Agent": "Bylx666",
-        "Content-Length": Buffer.byteLength(JSON.stringify(body)),
-        "Authorization": "token "+process.env.repo_token
       }
 
-    }, (ghRes)=>{
-    
-      var data = '';
-    
-      ghRes.setEncoding('utf8');
-      ghRes.on('data', (chunk)=> {
-        data += chunk;
-      });
-      ghRes.on('end', ()=> {
+      if(!reqBody.message) {
 
-        res.setHeader('Content-Type', 'application/json');
-        res.end(data);
+        res.status(403);
+        res.json({error: '需要在 body 中提供 message'});
+        return false;
 
+      }
+      body.message = reqBody.message;
+
+      if(!reqBody.path) {
+
+        res.status(403);
+        res.json({error: '你文件路径呢？？'});
+        return false;
+
+      }
+      
+      if(reqBody.sha) {
+
+        body.sha = reqBody.sha;
+
+      }
+
+      const ghReq = https.request({
+        hostname: 'api.github.com',
+        port: 443,
+        path: '/repos/Bylx666/bed/contents/'+ encodeURIComponent(reqBody.path),
+        method: method,
+        headers: {
+          "User-Agent": "Bylx666",
+          "Content-Length": Buffer.byteLength(JSON.stringify(body)),
+          "Authorization": "token "+process.env.repo_token
+        }
+
+      }, (ghRes)=>{console.log(encodeURIComponent(reqBody.path));
+      
+        var data = '';
+      
+        ghRes.setEncoding('utf8');
+
+        ghRes.on('data', (chunk)=> {
+
+          data += chunk;
+
+        });
+        
+        ghRes.on('end', ()=> {
+
+          res.setHeader('Content-Type', 'application/json');
+          res.end(data);
+
+        });
+      
       });
-    
+      
+      ghReq.end(JSON.stringify(body));
     });
-    
-    ghReq.end(JSON.stringify(body));
 
   }
   

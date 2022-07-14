@@ -220,10 +220,20 @@ body > header > input {
 }
 #oss > .list-view > header {
   height: 30px;
+  border-bottom: 2px solid var(--visit);
+  line-height: 30px;
+  margin: 5px 10px;
 }
 #oss > .list-view > header > a {
   color: var(--visit);
+  cursor: pointer;
+  margin: 0 5px;
+  transition: opacity 0.2s;
 }
+#oss > .list-view > header > a:hover {
+  opacity: 0.6;
+}
+
 #oss > .list-view > div {
   display: flex;
   height: 36px;
@@ -251,6 +261,7 @@ body > header > input {
 }
 
 #oss > .file-view {
+  z-index: 100;
   position: fixed;
   left: 0;top: 0;
   background-color: #fff;
@@ -541,7 +552,7 @@ $('psw').onchange = ()=> {
 };
 
 // 左侧菜单
-var navList = ['删除评论', 'OSS管理'];
+var navList = ['删除评论', 'OSS管理', '文章管理'];
 var mainTitle = document.createElement('h2');
 
 for(let i = 0; i < navList.length; ++i) {
@@ -1341,7 +1352,7 @@ var oss = (()=> {
     for(let i = 0; i < dropList.length; ++i) {
 
       const fd = dropList[i];
-      const p = fd.p ? ( fd.p + '/' ) : '' + fd.n;
+      const p = ( fd.p ? ( fd.p + '/' ) : '' ) + fd.n;
       
       req('/api/oss', {
         admin: psw,
@@ -1349,7 +1360,7 @@ var oss = (()=> {
         content: fd.c,
         message: `${ (new Date()).toLocaleString() } - Fanins Admin - Create File ${ p }: ${ fd.s }`,
         path: p
-      }, (res)=> {
+      }, (res)=> {console.log(p);
 
         if(res.commit) {
 
@@ -1383,6 +1394,18 @@ var oss = (()=> {
   dropPad.append(dropPad.submit);
 
   df.append(dropPad);
+
+  dfs.push(df);
+
+})();
+
+// 第三页文章管理
+var artiM = (()=> {
+
+  var df = document.createElement('div');
+  df.id = 'arti-m';
+
+  df.textContent = '施工捏';
 
   dfs.push(df);
 

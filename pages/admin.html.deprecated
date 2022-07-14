@@ -23,6 +23,8 @@
   }
 </style>
 <script>
+location.href = '/admin.html#本页面已移至/admin.html，从此此页面将不可正常使用。';
+
 var $ = (el)=> this.querySelector('#'+el);
 
 // === 文章管理 Start ===
@@ -76,8 +78,10 @@ $('del-review-act').onclick = ()=> {
   req('/api/reviews?admin='+$('psw').value, postBody, (res)=>{
 
     if(res.error) {
+
       ensure('删除失败: '+res.error);
       return false;
+      
     }
 
     ensure(`删除了${res.deletedCount}条数据。`);

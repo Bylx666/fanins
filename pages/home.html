@@ -99,10 +99,12 @@
 </style>
 <script>
   req('/asset/articles/index.json', (list)=>{
+
     var topFrag = document.createDocumentFragment();
     var documentFrag = document.createDocumentFragment();
 
     for(const article of list.reverse()) {
+
       const div = document.createElement('div');
       if(article.cover) div.innerHTML += `
         <img src="/asset/articles/covers/${article.cover}" alt="${article.cover}"/>
@@ -113,21 +115,27 @@
         <span>${article.time||"公元前"} ${article.author||"无名氏"}</span>
       `;
       if(article.id) div.onclick = ()=> {
+
         document.title = article.title||"没起名的文章";
         localStorage.setItem('last-read', article.id);
         localStorage.setItem('last-read-title', article.title);
-        history.pushState(null, '', `/reading?id=${encodeURIComponent(article.id)}`);
         Page.jump(`reading`, true);
+
       };
       if(article.top) {
+
         div.classList.add('top');
         topFrag.append(div);
+
       }else {
+
         documentFrag.append(div);
+
       }
     }
 
     this.querySelector('#home-list').append(topFrag);
     this.querySelector('#home-list').append(documentFrag);
+    
   }, 'json');
 </script>

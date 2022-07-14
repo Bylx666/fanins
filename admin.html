@@ -8,7 +8,7 @@
   <link rel="shortcut icon" href="/favicon.png" type="image/png">
 </head>
 <body>
-  <header>幻想与启发管理员<input id="psw" type="text" placeholder="password"/><svg id="modori" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" onclick="location.href = '/';"><path d="M894.976 574.464q0 78.848-29.696 148.48t-81.408 123.392-121.856 88.064-151.04 41.472q-5.12 1.024-9.216 1.536t-9.216 0.512l-177.152 0q-17.408 0-34.304-6.144t-30.208-16.896-22.016-25.088-8.704-29.696 8.192-29.696 21.504-24.576 29.696-16.384 33.792-6.144l158.72 1.024q54.272 0 102.4-19.968t83.968-53.76 56.32-79.36 20.48-97.792q0-49.152-18.432-92.16t-50.688-76.8-75.264-54.784-93.184-26.112q-2.048 0-2.56 0.512t-2.56 0.512l-162.816 0 0 80.896q0 17.408-13.824 25.6t-44.544-10.24q-8.192-5.12-26.112-17.92t-41.984-30.208-50.688-36.864l-51.2-38.912q-15.36-12.288-26.624-22.016t-11.264-24.064q0-12.288 12.8-25.6t29.184-26.624q18.432-15.36 44.032-35.84t50.688-39.936 45.056-35.328 28.16-22.016q24.576-17.408 39.936-7.168t16.384 30.72l0 81.92 162.816 0q5.12 0 10.752 1.024t10.752 2.048q79.872 8.192 149.504 41.984t121.344 87.552 80.896 123.392 29.184 147.456z"></path></svg></header>
+  <header>幻想与启发管理员<input id="psw" type="text" placeholder="password"/><svg id="modori" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" onclick="history.back();"><path d="M894.976 574.464q0 78.848-29.696 148.48t-81.408 123.392-121.856 88.064-151.04 41.472q-5.12 1.024-9.216 1.536t-9.216 0.512l-177.152 0q-17.408 0-34.304-6.144t-30.208-16.896-22.016-25.088-8.704-29.696 8.192-29.696 21.504-24.576 29.696-16.384 33.792-6.144l158.72 1.024q54.272 0 102.4-19.968t83.968-53.76 56.32-79.36 20.48-97.792q0-49.152-18.432-92.16t-50.688-76.8-75.264-54.784-93.184-26.112q-2.048 0-2.56 0.512t-2.56 0.512l-162.816 0 0 80.896q0 17.408-13.824 25.6t-44.544-10.24q-8.192-5.12-26.112-17.92t-41.984-30.208-50.688-36.864l-51.2-38.912q-15.36-12.288-26.624-22.016t-11.264-24.064q0-12.288 12.8-25.6t29.184-26.624q18.432-15.36 44.032-35.84t50.688-39.936 45.056-35.328 28.16-22.016q24.576-17.408 39.936-7.168t16.384 30.72l0 81.92 162.816 0q5.12 0 10.752 1.024t10.752 2.048q79.872 8.192 149.504 41.984t121.344 87.552 80.896 123.392 29.184 147.456z"></path></svg></header>
   <div id="c">
     <nav>
       <p>菜单</p>
@@ -23,6 +23,11 @@ body {
   margin: 0;
   overflow: hidden;
   font-family: Arial, Helvetica, sans-serif;
+  --admin: #f75;
+  --visit: #7da;
+  --visit-bg: #7da3;
+  --wrong: #f35;
+  --warn: #dac;
 }
 
 input {
@@ -89,10 +94,10 @@ input:disabled:hover, input:disabled:focus {
 }
 /* 框架结束 */
 
-header {
+body > header {
   width: 100%;
   height: 50px;
-  background-color: #7da;
+  background-color: var(--visit);
   padding: 0 30px;
   line-height: 50px;
   font-size: 24px;
@@ -125,7 +130,7 @@ header {
   animation: modori-rotate 1s linear infinite;
 }
 
-header > input {
+body > header > input {
   position: absolute;
   left: 240px;
   top: 10px;
@@ -146,7 +151,7 @@ header > input {
   display: flex;
   flex-direction: column;
   width: 160px;
-  background-color: #7da;
+  background-color: var(--visit);
   color: #fff;
   text-shadow: 0 0 3px #000;
   padding-top: 10px;
@@ -175,7 +180,7 @@ header > input {
   width: 100%;
   background-color: #fe8;
   border-radius: 30px;
-  overflow: hidden;
+  overflow: hidden auto;
   padding: 30px;
 }
 #c > main > h2 {
@@ -189,7 +194,7 @@ header > input {
   margin: 5px 10px 24px 0;
 }
 #del-review > span {
-  background-color: #7da;
+  background-color: var(--visit);
   color: #fff;
   padding: 15px 30px;
   height: 30px;
@@ -205,12 +210,192 @@ header > input {
   opacity: 0.6;
 }
 
-#c > nav, #c > main, header {
+#oss > .list-view {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--visit-bg);
+  box-shadow: 0 0 3px #000;
+  padding: 3px;
+  border-radius: 5px;
+}
+#oss > .list-view > header {
+  height: 30px;
+}
+#oss > .list-view > header > a {
+  color: var(--visit);
+}
+#oss > .list-view > div {
+  display: flex;
+  height: 36px;
+  margin: 2px;
+  padding: 5px;
+  cursor: pointer;
+  border-radius: 5px;
+  background-color: #fff0;
+  box-shadow: 0 0 3px #0000;
+  transition: background-color 0.2s, box-shadow 0.2s;
+}
+#oss > .list-view > div:hover {
+  background-color: var(--visit);
+  box-shadow: 0 0 3px #000;
+}
+#oss > .list-view > div > svg {
+  margin: 3px;
+  height: 30px;
+  width: 30px;
+}
+#oss > .list-view > div > span {
+  height: 30px;
+  line-height: 30px;
+  margin: 3px 15px;
+}
+
+#oss > .file-view {
+  position: fixed;
+  left: 0;top: 0;
+  background-color: #fff;
+  width: 400px;
+  overflow: hidden;
+  border-radius: 5px;
+  padding: 10px;
+  box-shadow: 0 0 3px #000;
+}
+#oss > .file-view > .preview {
+  float: left;
+  box-shadow: 1px 1px 3px #000;
+  height: 100px;
+  width: 100px;
+  overflow: hidden;
+  background-color: #000;
+  color: #fff;
+}
+#oss > .file-view > .preview > * {
+  height: 100px;
+  width: 100px;
+  object-fit: contain;
+}
+#oss > .file-view > p {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  height: 30px;
+  margin: 0;
+  padding: 10px 15px;
+  line-height: 30px;
+  font-size: 16px;
+  display: flex;
+}
+#oss > .file-view > p > span {
+  text-align: center;
+  width: 50%;
+  font-size: 15px;
+  height: 20px;
+  line-height: 20px;
+  padding: 5px;
+  margin: 0 10px;
+  border-radius: 10px;
+  box-shadow: 0 0 3px #000;
+  background-color: var(--visit);
+  color: #fff;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+#oss > .file-view > p > span:hover {
+  opacity: 0.6;
+}
+
+#oss > .drop {
+  margin: 10px 0;
+  background-color: #555;
+  color: #fff;
+  box-shadow: 0 0 3px #000;
+  border-radius: 5px;
+  padding: 5px;
+}
+#oss > .drop > p {
+  margin: 0;
+  padding: 50px 0;
+  text-align: center;
+}
+
+#oss > .drop > .drop-input {
+  display: flex;
+}
+#oss > .drop > .drop-input > input {
+  width: 50%;
+  margin: 5px;
+}
+
+#oss > .drop > .list {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+#oss > .drop > .list > div {
+  position: relative;
+  background-color: #fff3;
+  box-shadow: 0 0 3px #000;
+  transition: background-color 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+  border-radius: 5px;
+  padding: 5px;
+  height: 60px;
+  margin: 5px;
+}
+#oss > .drop > .list > div:hover {
+  background-color: #fff0;
+  box-shadow: 0 0 3px #fff;
+}
+#oss > .drop > .list > div > p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 16px;
+  padding: 2px 20px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#oss > .drop > .list > div > svg {
+  position: absolute;
+  right: 20px;
+  top: 10px;
+  fill: #fff;
+  transition: fill 0.2s;
+  width: 50px;
+  height: 50px;
+}
+#oss > .drop > .list > div > svg:hover {
+  fill: var(--warn);
+}
+
+#oss > .drop > span {
+  display: block;
+  text-align: center;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #aaa;
+  color: #fff;
+  box-shadow: 0 0 3px #000;
+  margin: 5px;
+  transition: background-color 0.2s, opacity 0.2s;
+}
+#oss > .drop > span:hover {
+  opacity: 1;
+}
+#oss > .drop > span.act {
+  background-color: var(--admin);
+  cursor: pointer;
+}
+#oss > .drop > span.act:hover {
+  opacity: 0.6;
+}
+
+#c > nav, #c > main, body > header {
   opacity: 0.5;
   transition: opacity 0.2s;
   box-shadow: 0 0 3px #000;
 }
-#c > nav:hover, #c > main:hover, header:hover {
+#c > nav:hover, #c > main:hover, body > header:hover {
   opacity: 1;
 }
 
@@ -356,7 +541,7 @@ $('psw').onchange = ()=> {
 };
 
 // 左侧菜单
-var navList = ['删除评论', 'test1', 'test2'];
+var navList = ['删除评论', 'OSS管理'];
 var mainTitle = document.createElement('h2');
 
 for(let i = 0; i < navList.length; ++i) {
@@ -430,11 +615,10 @@ var delReview = (()=> {
   df.append(info);
 
   var test = document.createElement('span');
-  test.textContent = '查询此评论';
-  test.onclick = ()=> {
-    req(`/api/reviews?aid=${list.value}`, (res)=> {
+  var testCache = {};
+  function testCb(res) {
 
-      var hasResult = false;
+    var hasResult = false;
 
       for(let i = 0; i < res.length; ++i) {
 
@@ -451,17 +635,33 @@ var delReview = (()=> {
 
       if(!hasResult) {
 
-        info.style.color = '#f35';
+        info.style.color = 'var(--wrong)';
         info.textContent = '无查询结果';
         
       }
+
+  }
+  test.textContent = '查询此评论';
+  test.onclick = ()=> {
+
+    if(testCache[list.value]) {
+
+      testCb(testCache[list.value]);
+      return true;
+
+    }
+
+    req(`/api/reviews?aid=${list.value}`, (res)=> {
+
+      testCache[list.value] = res;
+      testCb(res);
       
     }, 'json');
   };
   df.append(test);
 
   var del = document.createElement('span');
-  del.style.backgroundColor = '#f75';
+  del.style.backgroundColor = 'var(--admin)';
   del.textContent = '直接删除';
   del.onclick = ()=> {
 
@@ -477,7 +677,7 @@ var delReview = (()=> {
 
       if(res.error) {
 
-        info.style.color = '#f35';
+        info.style.color = 'var(--wrong)';
         info.textContent = res.error;
         return false;
 
@@ -490,7 +690,7 @@ var delReview = (()=> {
 
       }else {
 
-        info.style.color = '#f35';
+        info.style.color = 'var(--wrong)';
         info.textContent = '未找到查询的评论，删除失败。';
 
       }
@@ -502,6 +702,687 @@ var delReview = (()=> {
 
   main.innerHTML = '<h2>' + navList[0] + '</h2>';
   main.append(df);
+
+  dfs.push(df);
+
+})();
+
+// 第二页oss管理(By Github)
+var oss = (()=> {
+
+  var df = document.createElement('div');
+  df.id = 'oss';
+
+  var info = document.createElement('p');
+  df.append(info);
+
+  // var fileInput = document.createElement('input');
+  // fileInput.type = 'file';
+  // df.append(fileInput);
+
+  // var fileDragger = document.createElement('div');
+  // fileDragger.ondrop = (e)=> {
+
+  //   e.stopPropagation();
+  //   e.preventDefault();
+    
+  //   var baseReader = new FileReader();
+  //   baseReader.onload = ()=> {
+
+  //     var res = baseReader.result;
+
+  
+
+  //   };
+  //   baseReader.readAsDataURL(e.dataTransfer.files[0]);
+
+  // };
+  // df.append(fileDragger);
+  // fileDragger.style.width = fileDragger.style.height = '300px';
+  // fileDragger.style.backgroundColor = '#000';
+
+  var fileView = document.createElement('div');
+  fileView.className = 'file-view';
+  fileView.style.visibility = 'hidden';
+  fileView.onclick = (e)=> e.stopPropagation();
+  fileView.oncontextmenu = (e)=> e.preventDefault();
+
+  fileView.previewDiv = document.createElement('div');
+  fileView.previewDiv.className = 'preview';
+  fileView.append(fileView.previewDiv);
+
+  fileView.fileName = document.createElement('p');
+  fileView.append(fileView.fileName);
+
+  fileView.size = document.createElement('p');
+  fileView.append(fileView.size);
+
+  fileView.path = document.createElement('p');
+  fileView.append(fileView.path);
+
+  fileView.sha = document.createElement('p');
+  fileView.append(fileView.sha);
+
+  fileView.linkList = document.createElement('p');
+
+  fileView.linkJsDel = document.createElement('span');
+  fileView.linkJsDel.textContent = 'jsDelivr';
+  fileView.linkList.append(fileView.linkJsDel);
+
+  fileView.linkRaw = document.createElement('span');
+  fileView.linkRaw.textContent = 'Github Raw';
+  fileView.linkList.append(fileView.linkRaw);
+
+  fileView.append(fileView.linkList);
+
+  fileView.opList = document.createElement('p');
+
+  fileView.opUpdate = document.createElement('span');
+  fileView.opUpdate.textContent = '更新文件';
+
+  fileView.opUpdateFile = document.createElement('input');
+  fileView.opUpdateFile.type = 'file';
+  fileView.opUpdateFile.cache = '';
+  fileView.opUpdateFile.dest = {};
+
+  fileView.opUpdateFile.onchange = ()=> {
+    
+    var f = fileView.opUpdateFile.files[0];
+    var fr = new FileReader();
+
+    fr.onload = ()=> {
+
+      var r = fr.result;
+
+      fileView.opUpdateFile.cache = r.substring(r.indexOf(',')+1, r.length);
+
+      info.style.color = '#000';
+      info.textContent = `${f.name}已缓存，大小${f.size}。更新目标为${fileView.opUpdateFile.dest.path}，大小为${fileView.opUpdateFile.dest.size}。请右键更新按钮进行更新。`;
+
+    };
+    fr.readAsDataURL(f);
+
+  };
+
+  fileView.opUpdate.oncontextmenu = ()=> {
+
+    var cache = fileView.opUpdateFile.cache;
+    if(!cache) {
+
+      info.style.color = 'var(--wrong)';
+      info.textContent = '未选择任何文件！请左键此按钮进行选择。';
+      return false;
+      
+    }
+
+    req('/api/oss', {
+      admin: psw,
+      action: 'put',
+      content: cache,
+      message: `${(new Date()).toLocaleString()} - Fanins Admin - Update Origin ${fileView.opUpdateFile.dest.path}: ${fileView.opUpdateFile.dest.size}`,
+      path: fileView.opUpdateFile.dest.path,
+      sha: fileView.opUpdateFile.dest.sha
+    }, (res)=> {
+
+      if(res.error) {
+
+        info.style.color = 'var(--wrong)';
+        info.textContent = 'api验证出错：' + res.error;
+
+      }
+      else if(res.message) {
+
+        info.style.color = 'var(--wrong)';
+        info.textContent = '更改失败：' + res.message;
+
+      }
+      else {
+
+        info.style.color = '#000';
+        info.textContent = '文件已更新：' + res.commit.message;
+
+        relistView(relistView.path);
+
+      }
+
+    }, 'json');
+    
+  };
+
+  fileView.opList.append(fileView.opUpdate);
+
+  fileView.opDel = document.createElement('span');
+  fileView.opDel.textContent = '删除文件';
+  fileView.opList.append(fileView.opDel);
+
+  fileView.opUpdate.style.backgroundColor = fileView.opDel.style.backgroundColor = 'var(--admin)';
+  fileView.append(fileView.opList);
+
+  df.append(fileView);
+
+  function viewFile(file, x, y) {
+
+    fileView.style.visibility = 'visible';
+    
+    var doc = document.documentElement;
+    if(x + fileView.clientWidth > doc.clientWidth) {
+
+      x = doc.clientWidth - fileView.clientWidth;
+
+    }
+    if(y + fileView.clientHeight > doc.clientHeight) {
+
+      y = doc.clientHeight - fileView.clientHeight;
+      
+    }
+    fileView.style.transform = `translate(${x}px, ${y}px)`;
+    fileView.previewDiv.textContent = '';
+
+    var isDir = false;
+    var jsdUrl = 'https://cdn.jsdelivr.net/gh/Bylx666/bed@main/'+file.path;
+
+    switch (file.ext) {
+
+      case 'dir': {
+
+        const svg = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
+        svg.innerHTML = '<path fill="#fff" d="M1.75 1A1.75 1.75 0 000 2.75v10.5C0 14.216.784 15 1.75 15h12.5A1.75 1.75 0 0016 13.25v-8.5A1.75 1.75 0 0014.25 3H7.5a.25.25 0 01-.2-.1l-.9-1.2C6.07 1.26 5.55 1 5 1H1.75z"></path>';
+        svg.setAttribute('viewBox', '0 0 16 16');
+        fileView.previewDiv.append(svg);
+
+        isDir = true;
+
+        break;
+
+      }
+
+      case 'pic': {
+
+        const img = document.createElement('img');
+        img.src = jsdUrl;
+        fileView.previewDiv.append(img);
+
+        break;
+
+      }
+
+      case 'audio': {
+
+        const audio = document.createElement('audio');
+        audio.src = jsdUrl;
+        fileView.previewDiv.append(audio);
+
+        break;
+
+      }
+
+      case 'video': {
+
+        const video = document.createElement('video');
+        video.src = jsdUrl;
+        fileView.previewDiv.append(video);
+
+        break;
+
+      }
+
+      default: {
+
+        const p = document.createElement('p');
+        fileView.previewDiv.append(p);
+        req(jsdUrl, (res)=> {
+
+          p.textContent = res;
+
+        });
+
+      }
+
+    }
+
+    fileView.fileName.textContent = file.name;
+    fileView.size.textContent = isDir ? '文件夹' : file.size;
+    fileView.path.textContent = file.path;
+    fileView.sha.textContent = file.sha;
+
+    if(!isDir) {
+
+      fileView.linkList.style.display = 'flex';
+      fileView.opList.style.display = 'flex';
+      fileView.linkJsDel.onclick = ()=> {
+
+        open(jsdUrl, '_blank');
+
+      };
+      fileView.linkRaw.onclick = ()=> {
+
+        open(file.download_url, '_blank');
+        
+      };
+
+      fileView.opUpdate.onclick = ()=> {
+
+        fileView.opUpdateFile.dest = {
+          path: file.path,
+          size: file.size,
+          sha: file.sha
+        };
+
+        fileView.opUpdateFile.click();
+
+      };
+
+      fileView.opDel.onclick = ()=> {
+
+        info.style.color = 'var(--warn)';
+        info.textContent = `你准备删除 ${file.path}，大小为${file.size}，sha值为${file.sha}。按下右键绝杀此文件。`;
+
+      };
+
+      fileView.opDel.oncontextmenu = ()=> {
+
+        req('/api/oss', {
+          admin: psw,
+          action: 'del',
+          message: `${(new Date()).toLocaleString()} - Fanins Admin - Delete Origin ${file.path}: ${file.size}`,
+          path: file.path,
+          sha: file.sha
+        }, (res)=> {
+
+          if(res.error) {
+
+            info.style.color = 'var(--wrong)';
+            info.textContent = 'api验证失败：' + res.error;
+
+          }
+          else if(res.message) {
+
+            info.style.color = 'var(--wrong)';
+            info.textContent = '删除失败：' + res.message;
+
+          }
+          else {
+
+            info.style.color = 'var(--warn)';
+            info.textContent = '文件已删除：' + res.commit.message;
+
+            relistView(relistView.path);
+
+          }
+
+        }, 'json');
+      };
+
+    }
+    else {
+      
+      fileView.linkList.style.display = 'none';
+      fileView.opList.style.display = 'none';
+
+    }
+
+    setTimeout(()=> {
+
+      document.addEventListener('click', function showFileView() {
+
+        fileView.style.visibility = 'hidden';
+        document.removeEventListener('click', showFileView);
+
+      });
+
+    }, 50);
+
+  }
+
+  var listView = document.createElement('div');
+  listView.className = 'list-view';
+  df.append(listView);
+
+  relistView('');
+
+  function relistView(path) {
+
+    relistView.path = path;
+
+    listView.textContent = '';
+
+    req('/api/oss?path='+path, (res)=> {
+
+      var header = document.createElement('header');
+      var headerRoot = document.createElement('a');
+      headerRoot.textContent = 'Github OSS';
+      headerRoot.onclick = ()=> {
+
+        relistView('');
+
+      };
+      header.append(headerRoot);
+
+      var pathArr = path.split('/');
+      for(let i = 0; i < pathArr.length; ++i) {
+
+        const a = document.createElement('a');
+        a.textContent = pathArr[i];
+        a.onclick = ()=> {
+
+          var newPath = '';
+          for(let j = 0; j <= i; ++j) {
+
+            newPath += pathArr[j];
+            if(i!==0) newPath += '/';
+
+          }
+
+          relistView(newPath);
+
+        };
+        
+        header.append('/');
+        header.append(a);
+        
+      }
+      listView.append(header);
+
+      var dirList = [];
+      var fileList = [];
+      for(let i = 0; i < res.length; ++i) {
+
+        if(res[i].type==='dir') {
+
+          dirList.push(res[i]);
+          
+        }
+        else {
+
+          fileList.push(res[i]);
+
+        }
+
+      }
+
+      for(let i = 0; i < dirList.length; ++i) {
+
+        const dir = dirList[i];
+
+        const div = document.createElement('div');
+        div.onclick = ()=> {
+
+          relistView(dir.path);
+
+        };
+        div.oncontextmenu = (e)=> {
+
+          e.preventDefault();
+          
+          viewFile(dir, e.clientX, e.clientY);
+          
+        };
+
+        const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        svg.innerHTML = '<path d="M1.75 1A1.75 1.75 0 000 2.75v10.5C0 14.216.784 15 1.75 15h12.5A1.75 1.75 0 0016 13.25v-8.5A1.75 1.75 0 0014.25 3H7.5a.25.25 0 01-.2-.1l-.9-1.2C6.07 1.26 5.55 1 5 1H1.75z"></path>';
+        svg.setAttribute('viewBox', '0 0 16 16');
+        dir.ext = 'dir';
+        div.append(svg);
+
+        const span = document.createElement('span');
+        span.textContent = dir.name;
+        div.append(span);
+
+        listView.append(div);
+        
+      }
+
+      for(let i = 0; i < fileList.length; ++i) {
+
+        const file = fileList[i];
+        const div = document.createElement('div');
+        div.onclick = ()=> {
+
+          open(file.download_url, '_blank');
+
+        };
+        div.oncontextmenu = (e)=> {
+
+          e.preventDefault();
+          
+          viewFile(file, e.clientX, e.clientY);
+          
+        };
+
+        const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+
+        // 判断文件类型
+        let ext = file.name.split('.')[file.name.split('.').length - 1];
+        if(file.name.split('.').length===0) ext = 'txt';
+        switch (ext) {
+
+          case 'gif': case 'jpeg': case 'png': case 'jpg': case 'webp':
+          case 'ico': case 'bmp': case 'svg': case 'svgz': {
+
+            svg.innerHTML = '<path d="M938.666667 553.92V768c0 64.8-52.533333 117.333333-117.333334 117.333333H202.666667c-64.8 0-117.333333-52.533333-117.333334-117.333333V256c0-64.8 52.533333-117.333333 117.333334-117.333333h618.666666c64.8 0 117.333333 52.533333 117.333334 117.333333v297.92z m-64-74.624V256a53.333333 53.333333 0 0 0-53.333334-53.333333H202.666667a53.333333 53.333333 0 0 0-53.333334 53.333333v344.48A290.090667 290.090667 0 0 1 192 597.333333a286.88 286.88 0 0 1 183.296 65.845334C427.029333 528.384 556.906667 437.333333 704 437.333333c65.706667 0 126.997333 16.778667 170.666667 41.962667z m0 82.24c-5.333333-8.32-21.130667-21.653333-43.648-32.917333C796.768 511.488 753.045333 501.333333 704 501.333333c-121.770667 0-229.130667 76.266667-270.432 188.693334-2.730667 7.445333-7.402667 20.32-13.994667 38.581333-7.68 21.301333-34.453333 28.106667-51.370666 13.056-16.437333-14.634667-28.554667-25.066667-36.138667-31.146667A222.890667 222.890667 0 0 0 192 661.333333c-14.464 0-28.725333 1.365333-42.666667 4.053334V768a53.333333 53.333333 0 0 0 53.333334 53.333333h618.666666a53.333333 53.333333 0 0 0 53.333334-53.333333V561.525333zM320 480a96 96 0 1 1 0-192 96 96 0 0 1 0 192z m0-64a32 32 0 1 0 0-64 32 32 0 0 0 0 64z"></path>';
+            svg.setAttribute('viewBox', '0 0 1024 1024');
+            file.ext = 'pic';
+
+            break;
+
+          }
+
+          case 'mp3': case 'flac': case 'wav': case 'ogg': case 'm4a': {
+
+            svg.innerHTML = '<path d="M511.3 1006.8c-82.7 0-160.5-19.5-233.5-58.4-34.6-18.4-66.3-40.9-95.6-66.9-41.6-37-76-79.8-103.1-128.4-27.7-49.6-46.5-102.5-55.8-158.7-5.5-33.2-7.8-66.6-6.5-100.2 2.5-66.4 17.5-129.8 45.5-190.2 18.2-39.3 41.2-75.6 69-108.9 41.3-49.5 90.4-89.5 147.3-119.9 42.3-22.6 87-38.8 134-48.3 25.3-5.1 50.9-8.1 76.8-9.3 25.3-1.2 50.4-0.1 75.5 2.2 18.1 1.7 28.2 14 30.7 25.8 4.4 21.4-12.1 40.8-33.8 39.1-20-1.6-39.9-2.8-60-2.4-53 1.2-104.2 11.4-153.3 31.7-43.4 17.9-83.1 42-118.5 73-69.7 61.1-115.7 136.8-137.2 227-5.5 22.9-8.5 46.2-10.1 69.7-1.4 20.5-1.3 41 0.3 61.4 4 51.7 16.7 101.3 38.8 148.3 16.7 35.4 37.5 68 62.9 97.7 32.8 38.3 71.1 70 115.1 94.8 39.9 22.6 82.3 38.7 127.3 47.4 22.9 4.4 46 7 69.3 7.9 51.9 1.8 102.5-5.2 151.7-21.7C700 902 747 875.6 788.8 840.1c46.4-39.3 83-86.4 109.6-141 19.9-40.9 32.9-83.9 38.8-129.1 2.7-20.8 4.4-41.8 4-62.8-0.7-43.9-7.3-86.9-21.1-128.8-6.5-19.7 4.3-39 23.9-43.3 16.3-3.5 32.3 5.9 37.8 22.4 8.9 26.9 15.3 54.3 19.3 82.3 4.3 29.8 6 59.8 4.9 89.9-2.4 62.4-15.7 122.3-40.8 179.6-17.8 40.7-40.6 78.4-68.5 113-38.9 48.3-85.3 87.9-139 118.8-40.7 23.4-84 40.7-129.7 51.8-26 6.3-52.3 10.4-78.9 12.3-12.4 1.1-25.1 1.6-37.8 1.6z"></path><path d="M332.3 550.7c0.6-42.6 14.2-81 38.3-115.8 24.6-35.6 56.1-63.2 95.2-82 22.7-10.9 46.6-17.6 71.9-19.5 32.8-2.4 63.4 4 91.4 21.5 2.8 1.7 3.2 1.1 3.4-1.9 1.4-25 2.9-50.1 4.3-75.1 1.4-24.3 2.9-48.6 4.3-72.9l5.1-86.7c0.8-13.7 1.2-27.5 2.8-41.1 2.4-20.9 24.2-33.6 43.8-25.9 43.9 17.4 84.6 40.5 122 69.5 16.9 13.1 32.9 27.2 48 42.4 21.6 21.8 41.1 45.4 58.4 70.8 14.4 21.2 3.2 48-21.9 51.6-13.5 1.9-24.2-3.6-31.9-14.9-16.2-23.9-34.6-45.9-55.2-66-29-28.3-61.4-52.2-97.1-71.4-3.9-2.1-4.1-2.1-4.4 2.4-0.9 14.1-1.8 28.2-2.7 42.2-1.2 19.6-2.4 39.2-3.5 58.9-0.8 13.2-1.5 26.5-2.3 39.7-1.2 19.6-2.4 39.2-3.5 58.9-0.8 13.4-1.5 26.7-2.3 40.1l-4.2 70.8c-0.5 9-1.4 18.1-1.5 27.1-0.5 39-12.2 74.5-32.7 107.3-23.9 38.1-55.9 67.5-95.9 88.1-23.3 12-48 19.4-74.2 21.7-27 2.3-53.1-1-77.7-12.5-36.7-17.1-60.4-45.5-71.8-84.3-4.2-14.1-6.2-28.4-6.1-43z m219-152.6c-23.7-0.2-44.1 6.3-63.3 16.5-31.4 16.7-55.8 40.8-72.9 72-13.4 24.5-20.7 50.6-16.5 79 2.7 18.3 10.7 33.7 25.3 45.2 14 11 30.4 15 47.7 15.2 20.3 0.3 39.4-5 57.5-13.8 34.2-16.6 60.4-41.8 78.6-75 13.4-24.5 20.6-50.7 16.4-79-2.8-19.1-11.3-35-27.2-46.5-14-10.2-30.1-13.8-45.6-13.6zM505.5 120.6c8.6-0.4 16.9 0.6 24.2 5.6 11.3 7.8 16.7 21.8 13.3 35-3.4 13.3-14.3 22.7-27.9 24.3-8.9 1-17.8 0.5-26.7 1.1-35.3 2.5-69.3 10.5-102 24-33.5 13.9-63.8 32.9-90.9 57.1-13 11.6-25.1 24-36.1 37.5s-26.6 17.5-40.6 10.7c-18.4-8.9-24.5-31-12.8-47.8 6.4-9.2 14.2-17.4 21.9-25.5 32.4-34.1 69.8-61.6 112-82.3 38-18.7 78.1-30.5 120-36.2 15-2.1 30.3-3 45.6-3.5zM511.2 903.2c-5.3-0.2-10.3 0.3-15.2-0.7-16.1-3.2-27.3-18.2-25.8-34.8 1.5-16.6 15.1-29.3 31.6-29.5 34-0.3 67.3-5.2 99.7-15.4 39.1-12.4 74.5-31.7 106.4-57.4 17.3-14 32.9-29.7 47.1-46.9 12-14.5 29.2-17.8 43.9-8.6 16.5 10.3 20.4 32.6 8 48-27.3 33.8-59.4 62.2-96.1 85.4-42.6 26.9-88.7 44.6-138.1 53.7-20.6 3.7-41.2 5.8-61.5 6.2z"></path>';
+            svg.setAttribute('viewBox', '0 0 1024 1024');
+            file.ext = 'audio';
+
+            break;
+
+          }
+
+          case 'mp4': case 'mov': case 'mpg': case 'mpeg': case 'flv': case 'm4v': case 'avi': {
+
+            svg.innerHTML = '<path d="M546.133333 977.749333C298.666667 977.749333 97.450667 776.533333 97.450667 529.066667S298.666667 80.384 546.133333 80.384 994.816 281.6 994.816 529.066667 793.6 977.749333 546.133333 977.749333z m0-829.098666c-209.749333 0-380.416 170.666667-380.416 380.416s170.666667 380.416 380.416 380.416 380.416-170.666667 380.416-380.416S755.882667 148.650667 546.133333 148.650667z"></path><path d="M498.517333 692.906667c-10.752 0-21.504-2.56-31.402666-7.850667a67.584 67.584 0 0 1-36.010667-59.904V432.981333c0-25.088 13.824-48.128 36.010667-59.904 22.186667-11.776 48.981333-10.24 69.802666 3.925334l133.12 96.426666c18.261333 12.629333 29.184 33.450667 29.184 55.637334 0 22.357333-11.093333 43.349333-29.696 55.978666l-131.925333 95.573334c-12.117333 8.192-25.6 12.288-39.082667 12.288z m-1.024-260.096l1.706667 192.341333 131.072-95.914667-0.341333-0.341333h0.341333l-132.778667-96.085333z"></path>';
+            svg.setAttribute('viewBox', '0 0 1024 1024');
+            file.ext = 'video';
+
+            break;
+
+          }
+
+          default: {
+
+            svg.innerHTML = '<path d="M3.75 1.5a.25.25 0 00-.25.25v12.5c0 .138.112.25.25.25h9.5a.25.25 0 00.25-.25V6h-2.75A1.75 1.75 0 019 4.25V1.5H3.75zm6.75.062V4.25c0 .138.112.25.25.25h2.688a.252.252 0 00-.011-.013l-2.914-2.914a.272.272 0 00-.013-.011zM2 1.75C2 .784 2.784 0 3.75 0h6.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v9.586A1.75 1.75 0 0113.25 16h-9.5A1.75 1.75 0 012 14.25V1.75z"></path>';
+            svg.setAttribute('viewBox', '0 0 16 16');
+            file.ext = 'text';
+
+          }
+
+        }
+        div.append(svg);
+
+        const span = document.createElement('span');
+        span.textContent = file.name;
+        div.append(span);
+
+        listView.append(div);
+        
+      }
+      
+    }, 'json');
+
+  }
+
+  var dropPad = document.createElement('div');
+  var dropList = [];
+  dropPad.className = 'drop';
+  dropPad.ondrop = (e)=> {
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    dropPad.submit.classList.add('act');
+
+    var fa = e.dataTransfer.files;
+
+    for(let i = 0; i < fa.length; ++i) {
+
+      const fd = {
+        n: fa[i].name,
+        p: relistView.path,
+        s: fa[i].size,
+        c: ''
+      };
+      dropList.push(fd);
+
+      const fr = new FileReader();
+      fr.onload = ()=> {
+
+        var r = fr.result;
+
+        fd.c = r.substring(r.indexOf(',')+1, r.length);
+
+      };
+      fr.readAsDataURL(fa[i]);
+
+      const div = document.createElement('div');
+
+      const name = document.createElement('p');
+      name.textContent = fd.n;
+      div.append(name);
+
+      const path = document.createElement('p');
+      path.textContent = fd.p ? fd.p : '根目录';
+      div.append(path);
+
+      const size = document.createElement('p');
+      size.textContent = fd.s;
+      div.append(size);
+
+      const x = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
+      x.innerHTML = '<path d="M15 10 L25 20 L35 10 L40 15 L30 25 L40 35 L35 40 Z"></path>';
+      x.setAttribute('viewBox', '0 0 50 50');
+      x.onclick = (e)=> {
+
+        e.stopPropagation();
+
+        dropList.splice(dropList.indexOf(fd), 1);
+        if(dropList.length===0) {
+
+          dropPad.submit.classList.remove('act');
+
+        }
+
+        div.remove();
+
+        dropPad.inputPath.value = dropPad.inputName.value = '';
+
+      };
+      div.append(x);
+
+      div.onclick = ()=> {
+
+        dropPad.inputName.value = fd.n;
+        dropPad.inputName.onchange = (e)=> {
+
+          if(!dropPad.inputName.value) {
+
+            dropPad.inputName.value = fd.n;
+            return true;
+
+          }
+          fd.n = name.textContent = dropPad.inputName.value;
+
+        };
+
+        dropPad.inputPath.value = fd.p;
+        dropPad.inputPath.onchange = ()=> {
+
+          path.textContent = dropPad.inputPath.value ? dropPad.inputPath.value : '根目录';
+          fd.p = dropPad.inputPath.value;
+
+        };
+
+      };
+
+      dropPad.list.append(div);
+
+    }
+
+  };
+  
+  dropPad.p = document.createElement('p');
+  dropPad.p.textContent = '将文件拖到此处上传。';
+  dropPad.append(dropPad.p);
+
+  dropPad.inputDiv = document.createElement('div');
+  dropPad.inputDiv.className = 'drop-input';
+
+  dropPad.inputPath = document.createElement('input');
+  dropPad.inputPath.placeholder = '文件路径';
+  dropPad.inputDiv.append(dropPad.inputPath);
+
+  dropPad.inputName = document.createElement('input');
+  dropPad.inputName.placeholder = '文件名';
+  dropPad.inputDiv.append(dropPad.inputName);
+  
+  dropPad.append(dropPad.inputDiv);
+
+  dropPad.list = document.createElement('div');
+  dropPad.list.className = 'list';
+  dropPad.append(dropPad.list);
+
+  dropPad.submit = document.createElement('span');
+  dropPad.submit.textContent = '开始上传';
+  dropPad.submit.onclick = ()=> {
+
+    var count = {
+      suc: 0,
+      fail: 0
+    };
+
+    for(let i = 0; i < dropList.length; ++i) {
+
+      const fd = dropList[i];
+      const p = fd.p ? ( fd.p + '/' ) : '' + fd.n;
+      
+      req('/api/oss', {
+        admin: psw,
+        action: 'put',
+        content: fd.c,
+        message: `${ (new Date()).toLocaleString() } - Fanins Admin - Create File ${ p }: ${ fd.s }`,
+        path: p
+      }, (res)=> {
+
+        if(res.commit) {
+
+          ++count.suc;
+
+        }
+        else {
+
+          ++count.fail;
+
+        }
+        
+        if(count.suc + count.fail === dropList.length) {
+
+          info.style.color = '#000';
+          info.textContent = `上传了${ dropList.length }个文件，成功了${ count.suc }个，失败了${ count.fail }个`;
+
+          dropPad.list.textContent = '';
+          dropPad.inputPath.value = dropPad.inputName.value = '';
+          dropPad.submit.classList.remove('act');
+
+          dropList = [];
+          relistView(relistView.path);
+
+        }
+
+      }, 'json');
+    
+    }
+  };
+  dropPad.append(dropPad.submit);
+
+  df.append(dropPad);
 
   dfs.push(df);
 

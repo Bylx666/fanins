@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "mongodb": "^4.6.0"
+    "mongodb": "^4.6.0",
+    "octokit": "^2.0.3"
   }
 }

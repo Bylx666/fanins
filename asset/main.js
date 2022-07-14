@@ -325,7 +325,7 @@ void function main() {
 
   $('header-reading').onclick = ()=> {
 
-    Page.jump('reading');
+    Page.jump('reading', true);
     document.title = localStorage.getItem('last-read-title')||'读文';
 
   };

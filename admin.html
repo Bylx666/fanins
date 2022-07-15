@@ -281,6 +281,8 @@ body > header > input {
   color: #fff;
 }
 #oss > .file-view > .preview > * {
+  font-size: 12px;
+  margin: 0;
   height: 100px;
   width: 100px;
   object-fit: contain;
@@ -727,31 +729,6 @@ var oss = (()=> {
   var info = document.createElement('p');
   df.append(info);
 
-  // var fileInput = document.createElement('input');
-  // fileInput.type = 'file';
-  // df.append(fileInput);
-
-  // var fileDragger = document.createElement('div');
-  // fileDragger.ondrop = (e)=> {
-
-  //   e.stopPropagation();
-  //   e.preventDefault();
-    
-  //   var baseReader = new FileReader();
-  //   baseReader.onload = ()=> {
-
-  //     var res = baseReader.result;
-
-  
-
-  //   };
-  //   baseReader.readAsDataURL(e.dataTransfer.files[0]);
-
-  // };
-  // df.append(fileDragger);
-  // fileDragger.style.width = fileDragger.style.height = '300px';
-  // fileDragger.style.backgroundColor = '#000';
-
   var fileView = document.createElement('div');
   fileView.className = 'file-view';
   fileView.style.visibility = 'hidden';
@@ -890,7 +867,7 @@ var oss = (()=> {
     fileView.previewDiv.textContent = '';
 
     var isDir = false;
-    var jsdUrl = 'https://cdn.jsdelivr.net/gh/Bylx666/bed@main/'+file.path;
+    var jsdUrl = 'https://cdn.jsdelivr.net/gh/Bylx666/bed@main/' + file.path;
 
     switch (file.ext) {
 
@@ -921,6 +898,7 @@ var oss = (()=> {
 
         const audio = document.createElement('audio');
         audio.src = jsdUrl;
+        audio.controls = true;
         fileView.previewDiv.append(audio);
 
         break;
@@ -931,6 +909,7 @@ var oss = (()=> {
 
         const video = document.createElement('video');
         video.src = jsdUrl;
+        video.controls = true;
         fileView.previewDiv.append(video);
 
         break;
@@ -943,7 +922,16 @@ var oss = (()=> {
         fileView.previewDiv.append(p);
         req(jsdUrl, (res)=> {
 
-          p.textContent = res;
+          if(res==='Forbidden') {
+
+            p.textContent = `二进制文件。大小约为${file.size}b`;
+
+          }
+          else {
+
+            p.textContent = res;
+
+          }
 
         });
 
@@ -1224,6 +1212,15 @@ var oss = (()=> {
   var dropPad = document.createElement('div');
   var dropList = [];
   dropPad.className = 'drop';
+
+  dropPad.ondragenter = dropPad.ondragover = (e)=> {
+
+    e.stopPropagation();
+    e.preventDefault();
+    return false;
+
+  };
+  
   dropPad.ondrop = (e)=> {
 
     e.preventDefault();
@@ -1360,7 +1357,7 @@ var oss = (()=> {
         content: fd.c,
         message: `${ (new Date()).toLocaleString() } - Fanins Admin - Create File ${ p }: ${ fd.s }`,
         path: p
-      }, (res)=> {console.log(p);
+      }, (res)=> {
 
         if(res.commit) {
 
@@ -1405,7 +1402,68 @@ var artiM = (()=> {
   var df = document.createElement('div');
   df.id = 'arti-m';
 
-  df.textContent = '施工捏';
+  var cdn = 'https://cdn.jsdelivr.net/gh/Bylx666/bed@main/fanins/arti/';
+
+  var cdnSwitch = document.createElement('p');
+  cdnSwitch.style.cssText = 'transition: color 0.2s; cursor: pointer; text-shadow: 0 0 3px #000';
+  cdnSwitch.style.color = '#f63';
+  cdnSwitch.textContent = '正在使用jsDelivr。若无法访问请点击切换为Github Raw。';
+
+  cdnSwitch.onclick = (function click1() {
+
+    cdn = 'https://raw.githubusercontent.com/Bylx666/bed/main/fanins/arti/';
+    cdnSwitch.textContent = '正在使用Github Raw。再次点击切换回jsDelivr';
+    cdnSwitch.style.color = '#000';
+    
+    cdnSwitch.onclick = ()=> {
+
+      cdn = 'https://cdn.jsdelivr.net/gh/Bylx666/bed@main/fanins/arti/';
+      cdnSwitch.textContent = '正在使用jsDelivr。若无法访问请点击切换为Github Raw。';
+      cdnSwitch.style.color = '#f63';
+
+      cdnSwitch.onclick = click1;
+
+    };
+
+  });
+
+  cdnSwitch.onselectstart = (e)=> {
+
+    e.preventDefault();
+    return false;
+
+  };
+
+  df.append(cdnSwitch);
+
+  var info = document.createElement('p');
+  info.textContent = '233';
+  df.append(info);
+
+  var artiList = document.createElement('div');
+  artiList.className = 'list';
+  df.append(artiList);
+
+  function relist() {
+
+    req(cdn + 'index.json', (res)=> {
+
+      var r = JSON.parse(res);
+
+      for(let i = 0; i < r.length; ++i) {
+
+        const div = document.createElement('div');
+
+        
+        r[i]
+      }
+
+    });
+
+  }
+  relist();
+
+
 
   dfs.push(df);
 

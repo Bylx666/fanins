@@ -119,7 +119,7 @@ module.exports = (req, res)=> {
           "Authorization": "token "+process.env.repo_token
         }
 
-      }, (ghRes)=>{console.log(encodeURIComponent(reqBody.path));
+      }, (ghRes)=>{
       
         var data = '';
       

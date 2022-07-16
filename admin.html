@@ -30,15 +30,17 @@ body {
   --warn: #dac;
 }
 
-input {
+input, textarea {
+  resize: none;
   border: none;
   border-radius: 5px;
   box-shadow: 0 0 3px #000;
   transition: box-shadow 0.2s;
   outline: none;
   padding: 5px;
+  font-family: Arial, Helvetica, sans-serif;
 }
-input:hover, input:focus {
+input:hover, textarea:hover, input:focus, textarea:focus {
   box-shadow: 0 0 3px #aaa;
 }
 input:disabled:hover, input:disabled:focus {
@@ -92,6 +94,38 @@ input:disabled:hover, input:disabled:focus {
 .subUI-select > div > span:hover{
   box-shadow: 0 0 3px #000;
 }
+
+.subUI-checkbox {
+  display: flex;
+  padding: 5px;
+  cursor: pointer;
+}
+.subUI-checkbox:hover > div {
+  box-shadow: 1px 1px 3px #aaa;
+}
+.subUI-checkbox > div {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: #fff;
+  box-shadow: 1px 1px 3px #000;
+  transition: box-shadow 0.2s;
+}
+.subUI-checkbox > div > svg {
+  position: absolute;
+  left: -3px;
+  top: -3px;
+  width: 24px;
+  height: 24px;
+  fill: #555;
+}
+.subUI-checkbox > p {
+  line-height: 20px;
+  padding: 0 10px;
+  margin: 0;
+}
+
 /* 框架结束 */
 
 body > header {
@@ -403,6 +437,86 @@ body > header > input {
   opacity: 0.6;
 }
 
+#arti-m > .list {
+  display: flex;
+  flex-direction: column;
+}
+#arti-m > .list > div {
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #fff;
+  height: 60px;
+  margin-bottom: -15px;
+  box-shadow: 1px 1px 3px #000;
+  transition: transform 0.2s, height 0.2s;
+}
+#arti-m > .list > div > p {
+  margin: 0;
+  padding: 5px 15px;
+  font-size: 15px;
+  line-height: 20px;
+}
+
+#arti-m > .list > div > div {
+  position: relative;
+  padding: 10px;
+}
+#arti-m > .list > div > div > p {
+  margin: 10px 0;
+}
+#arti-m > .list > div > div > textarea {
+  display: block;
+  width: calc(100% - 10px);
+  font-size: 15px;
+  line-height: 20px;
+  height: 80px;
+  margin: 10px 0;
+}
+#arti-m > .list > div > div > img {
+  display: block;
+  margin: 10px 20px;
+  width: 100px;
+  height: 100px;
+  box-shadow: 1px 1px 3px #000;
+  background-color: #eee;
+  background-image: url(/asset/imagedoc-lightnoise.png);
+  color: #222;
+  font-size: 15px;
+  font-family: 'Courier New', Courier, monospace;
+  line-height: 100px;
+  text-align: center;
+}
+#arti-m > .list > div > div > svg {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  left: -5px;
+  top: -5px;
+  fill: var(--visit);
+  transition: fill 0.2s;
+  cursor: pointer;
+}
+#arti-m > .list > div > div > svg:hover {
+  fill: #000;
+}
+#arti-m > .list > div > div > span {
+  position: absolute;
+  right: 0;
+  top: 0;
+  font-size: 18px;
+  line-height: 24px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  color: #fff;
+  background-color: var(--admin);
+  box-shadow: 0 0 3px #000;
+  transition: opacity 0.2s;
+  cursor: pointer;
+}
+#arti-m > .list > div > div > span:hover {
+  opacity: 0.6;
+}
+
 #c > nav, #c > main, body > header {
   opacity: 0.5;
   transition: opacity 0.2s;
@@ -438,10 +552,9 @@ body > header > input {
 // Simple Utils
 function $(el) {return document.getElementById(el)};
 
-var reqCount = 0;
 function req() {
 
-  ++reqCount;
+  ++req.count;
   $('modori').classList.add('busy');
 
   var xhr = new XMLHttpRequest();
@@ -470,12 +583,25 @@ function req() {
 
     xhr.onload = ()=>{
 
-      if(--reqCount===0) $('modori').classList.remove('busy');
+      if(--req.count===0) $('modori').classList.remove('busy');
       cb(xhr.response, xhr.status);
 
     };
 
   }
+
+}
+req.count = 0;
+
+function renderSize(nSize) {
+
+  if(!nSize) return '0 字节';
+
+  var unitArr = ['字节', 'KB', 'MB', 'GB'];
+  var i = Math.floor( Math.log(nSize) / Math.log(1024) );
+  if(i >= unitArr.length) i = unitArr.length - 1;
+
+  return ( nSize / Math.pow(1024, i) ).toFixed(3) + ' ' + unitArr[i];
 
 }
 
@@ -496,6 +622,7 @@ var subUI = {
       svg.style.transform = 'rotate(-180deg)';
 
       setTimeout(()=>{
+
         var reclickEvent = ()=> {
 
           options.style.maxHeight = '0';
@@ -505,6 +632,7 @@ var subUI = {
 
         };
         document.addEventListener('click', reclickEvent);
+
       }, 50);
       
     };
@@ -541,6 +669,82 @@ var subUI = {
 
     return select;
 
+  },
+  createCheckbox(label ,defaultValue) {
+
+    var cb = document.createElement('div');
+    cb.className = 'subUI-checkbox';
+
+    cb.onselectstart = (e)=> {
+
+      e.preventDefault();
+      e.stopPropagation();
+      return false;
+      
+    };
+
+    cb.oncheck = null;
+
+    var checked = false;
+
+    Object.defineProperty(cb, 'value', {get: ()=>{
+
+      return checked;
+
+    }, set: (v)=> {
+
+      if(v) checkOn();
+      else checkOff();
+      
+    }})
+
+    var checkbox = document.createElement('div');
+    cb.append(checkbox);
+
+    var check = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
+    check.innerHTML = '<path d="M927.97968 108.360629a50.575037 50.575037 0 0 0-69.085501 18.517689l-391.898737 678.933747-316.000056-182.409708A50.575037 50.575037 0 0 0 100.427574 711.005546l359.812488 207.690002a50.553362 50.553362 0 0 0 69.078276-18.517689L946.504593 177.44613a50.575037 50.575037 0 0 0-18.524913-69.085501z"></path>';
+    check.setAttribute('viewBox', '0 0 1024 1024');
+    checkbox.append(check);
+    
+    function checkOn() {
+
+      check.style.display = null;
+      checked = true;
+
+      if(cb.oncheck) cb.oncheck(true);
+
+      cb.onclick = checkOff;
+
+    }
+
+    function checkOff() {
+
+      check.style.display = 'none';
+      checked = false;
+
+      if(cb.oncheck) cb.oncheck(false);
+
+      cb.onclick = checkOn;
+
+    }
+
+    if(defaultValue) {
+
+      checkOn();
+      
+    }
+    else {
+
+      checkOff();
+
+    }
+
+    var labelp = document.createElement('p');
+    labelp.textContent = label;
+    cb.append(labelp);
+
+    return cb;
+
   }
 }
 
@@ -562,6 +766,9 @@ for(let i = 0; i < navList.length; ++i) {
   const span = document.createElement('span');
   span.textContent = navList[i];
   span.onclick = ()=> {
+
+    if(i===navList.status) return false;
+    navList.status = i;
 
     main.textContent = null;
     mainTitle.textContent = navList[i];
@@ -585,7 +792,7 @@ var delReview = (()=> {
   df.id = 'del-review';
 
   var list;
-  req('/asset/articles/index.json', (res)=>{
+  req('/api/arti', (res)=>{
 
     var valueArr = [];
     var nameArr = [];
@@ -785,7 +992,7 @@ var oss = (()=> {
       fileView.opUpdateFile.cache = r.substring(r.indexOf(',')+1, r.length);
 
       info.style.color = '#000';
-      info.textContent = `${f.name}已缓存，大小${f.size}。更新目标为${fileView.opUpdateFile.dest.path}，大小为${fileView.opUpdateFile.dest.size}。请右键更新按钮进行更新。`;
+      info.textContent = `${f.name}已缓存，大小${ renderSize(f.size) }。更新目标为${fileView.opUpdateFile.dest.path}，大小为${ renderSize(fileView.opUpdateFile.dest.size) }。请右键更新按钮进行更新。`;
 
     };
     fr.readAsDataURL(f);
@@ -864,6 +1071,25 @@ var oss = (()=> {
       
     }
     fileView.style.transform = `translate(${x}px, ${y}px)`;
+
+    setTimeout(()=> {
+
+      document.addEventListener('click', function showFileView() {
+
+        fileView.style.visibility = 'hidden';
+        document.removeEventListener('click', showFileView);
+
+      });
+
+    }, 50);
+
+    if(file.path===viewFile.curPath) {
+
+      return true;
+
+    }
+    viewFile.curPath = file.path;
+
     fileView.previewDiv.textContent = '';
 
     var isDir = false;
@@ -899,6 +1125,7 @@ var oss = (()=> {
         const audio = document.createElement('audio');
         audio.src = jsdUrl;
         audio.controls = true;
+        audio.loop = true;
         fileView.previewDiv.append(audio);
 
         break;
@@ -910,6 +1137,9 @@ var oss = (()=> {
         const video = document.createElement('video');
         video.src = jsdUrl;
         video.controls = true;
+        video.muted = true;
+        video.autoplay = true;
+        video.loop = true;
         fileView.previewDiv.append(video);
 
         break;
@@ -924,7 +1154,7 @@ var oss = (()=> {
 
           if(res==='Forbidden') {
 
-            p.textContent = `二进制文件。大小约为${file.size}b`;
+            p.textContent = `二进制文件。大小约为${ renderSize(file.size) }b`;
 
           }
           else {
@@ -940,7 +1170,7 @@ var oss = (()=> {
     }
 
     fileView.fileName.textContent = file.name;
-    fileView.size.textContent = isDir ? '文件夹' : file.size;
+    fileView.size.textContent = isDir ? '文件夹' : renderSize(file.size);
     fileView.path.textContent = file.path;
     fileView.sha.textContent = file.sha;
 
@@ -974,7 +1204,7 @@ var oss = (()=> {
       fileView.opDel.onclick = ()=> {
 
         info.style.color = 'var(--warn)';
-        info.textContent = `你准备删除 ${file.path}，大小为${file.size}，sha值为${file.sha}。按下右键绝杀此文件。`;
+        info.textContent = `你准备删除 ${file.path}，大小为${ renderSize(file.size) }，sha值为${file.sha}。按下右键绝杀此文件。`;
 
       };
 
@@ -1020,17 +1250,6 @@ var oss = (()=> {
 
     }
 
-    setTimeout(()=> {
-
-      document.addEventListener('click', function showFileView() {
-
-        fileView.style.visibility = 'hidden';
-        document.removeEventListener('click', showFileView);
-
-      });
-
-    }, 50);
-
   }
 
   var listView = document.createElement('div');
@@ -1057,7 +1276,7 @@ var oss = (()=> {
       };
       header.append(headerRoot);
 
-      var pathArr = path.split('/');
+      var pathArr = path.split('/').filter( w => w );
       for(let i = 0; i < pathArr.length; ++i) {
 
         const a = document.createElement('a');
@@ -1067,8 +1286,7 @@ var oss = (()=> {
           var newPath = '';
           for(let j = 0; j <= i; ++j) {
 
-            newPath += pathArr[j];
-            if(i!==0) newPath += '/';
+            newPath += ( j?'/':'' ) + pathArr[j];
 
           }
 
@@ -1220,13 +1438,11 @@ var oss = (()=> {
     return false;
 
   };
-  
+
   dropPad.ondrop = (e)=> {
 
     e.preventDefault();
     e.stopPropagation();
-
-    dropPad.submit.classList.add('act');
 
     var fa = e.dataTransfer.files;
 
@@ -1238,79 +1454,90 @@ var oss = (()=> {
         s: fa[i].size,
         c: ''
       };
-      dropList.push(fd);
 
       const fr = new FileReader();
+
+      fr.onerror = ()=> {
+
+        info.style.color = 'var(--wrong)';
+        info.textContent = '上传的文件中包含无法读取的文件。文件夹是不能直接上传的。';
+
+      };
+
       fr.onload = ()=> {
+
+        dropPad.submit.classList.add('act');
 
         var r = fr.result;
 
         fd.c = r.substring(r.indexOf(',')+1, r.length);
+        dropList.push(fd);
 
-      };
-      fr.readAsDataURL(fa[i]);
+        var div = document.createElement('div');
 
-      const div = document.createElement('div');
+        var name = document.createElement('p');
+        name.textContent = fd.n;
+        div.append(name);
 
-      const name = document.createElement('p');
-      name.textContent = fd.n;
-      div.append(name);
+        var path = document.createElement('p');
+        path.textContent = fd.p ? fd.p : '根目录';
+        div.append(path);
 
-      const path = document.createElement('p');
-      path.textContent = fd.p ? fd.p : '根目录';
-      div.append(path);
+        var size = document.createElement('p');
+        size.textContent = renderSize(fd.s);
+        div.append(size);
 
-      const size = document.createElement('p');
-      size.textContent = fd.s;
-      div.append(size);
+        var x = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
+        x.innerHTML = '<path d="M15 10 L25 20 L35 10 L40 15 L30 25 L40 35 L35 40 Z"></path>';
+        x.setAttribute('viewBox', '0 0 50 50');
+        x.onclick = (e)=> {
 
-      const x = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
-      x.innerHTML = '<path d="M15 10 L25 20 L35 10 L40 15 L30 25 L40 35 L35 40 Z"></path>';
-      x.setAttribute('viewBox', '0 0 50 50');
-      x.onclick = (e)=> {
+          e.stopPropagation();
 
-        e.stopPropagation();
+          dropList.splice(dropList.indexOf(fd), 1);
+          if(dropList.length===0) {
 
-        dropList.splice(dropList.indexOf(fd), 1);
-        if(dropList.length===0) {
-
-          dropPad.submit.classList.remove('act');
-
-        }
-
-        div.remove();
-
-        dropPad.inputPath.value = dropPad.inputName.value = '';
-
-      };
-      div.append(x);
-
-      div.onclick = ()=> {
-
-        dropPad.inputName.value = fd.n;
-        dropPad.inputName.onchange = (e)=> {
-
-          if(!dropPad.inputName.value) {
-
-            dropPad.inputName.value = fd.n;
-            return true;
+            dropPad.submit.classList.remove('act');
 
           }
-          fd.n = name.textContent = dropPad.inputName.value;
+
+          div.remove();
+
+          dropPad.inputPath.value = dropPad.inputName.value = '';
+
+        };
+        div.append(x);
+
+        div.onclick = ()=> {
+
+          dropPad.inputName.value = fd.n;
+          dropPad.inputName.onchange = (e)=> {
+
+            if(!dropPad.inputName.value) {
+
+              dropPad.inputName.value = fd.n;
+              return true;
+
+            }
+            fd.n = name.textContent = dropPad.inputName.value;
+
+          };
+
+          dropPad.inputPath.value = fd.p;
+          dropPad.inputPath.onchange = ()=> {
+
+            path.textContent = dropPad.inputPath.value ? dropPad.inputPath.value : '根目录';
+            fd.p = dropPad.inputPath.value;
+
+          };
 
         };
 
-        dropPad.inputPath.value = fd.p;
-        dropPad.inputPath.onchange = ()=> {
-
-          path.textContent = dropPad.inputPath.value ? dropPad.inputPath.value : '根目录';
-          fd.p = dropPad.inputPath.value;
-
-        };
+        dropPad.list.append(div);
 
       };
 
-      dropPad.list.append(div);
+      fr.readAsDataURL(fa[i]);
 
     }
 
@@ -1339,18 +1566,20 @@ var oss = (()=> {
 
   dropPad.submit = document.createElement('span');
   dropPad.submit.textContent = '开始上传';
-  dropPad.submit.onclick = ()=> {
+  dropPad.submit.onclick = function click1() {
+
+    dropPad.submit.onclick = null;
 
     var count = {
       suc: 0,
       fail: 0
     };
 
-    for(let i = 0; i < dropList.length; ++i) {
+    var nextReq = (i)=> {
 
-      const fd = dropList[i];
-      const p = ( fd.p ? ( fd.p + '/' ) : '' ) + fd.n;
-      
+      var fd = dropList[i];
+      var p = ( fd.p ? ( fd.p + '/' ) : '' ) + fd.n;
+
       req('/api/oss', {
         admin: psw,
         action: 'put',
@@ -1372,6 +1601,8 @@ var oss = (()=> {
         
         if(count.suc + count.fail === dropList.length) {
 
+          dropPad.submit.onclick = click1;
+
           info.style.color = '#000';
           info.textContent = `上传了${ dropList.length }个文件，成功了${ count.suc }个，失败了${ count.fail }个`;
 
@@ -1383,10 +1614,19 @@ var oss = (()=> {
           relistView(relistView.path);
 
         }
+    
+        if(i < dropList.length) {
+
+          nextReq(++i);
+
+        }
 
       }, 'json');
+
+    };
     
-    }
+    nextReq(0);
+    
   };
   dropPad.append(dropPad.submit);
 
@@ -1402,68 +1642,229 @@ var artiM = (()=> {
   var df = document.createElement('div');
   df.id = 'arti-m';
 
-  var cdn = 'https://cdn.jsdelivr.net/gh/Bylx666/bed@main/fanins/arti/';
-
-  var cdnSwitch = document.createElement('p');
-  cdnSwitch.style.cssText = 'transition: color 0.2s; cursor: pointer; text-shadow: 0 0 3px #000';
-  cdnSwitch.style.color = '#f63';
-  cdnSwitch.textContent = '正在使用jsDelivr。若无法访问请点击切换为Github Raw。';
-
-  cdnSwitch.onclick = (function click1() {
-
-    cdn = 'https://raw.githubusercontent.com/Bylx666/bed/main/fanins/arti/';
-    cdnSwitch.textContent = '正在使用Github Raw。再次点击切换回jsDelivr';
-    cdnSwitch.style.color = '#000';
-    
-    cdnSwitch.onclick = ()=> {
-
-      cdn = 'https://cdn.jsdelivr.net/gh/Bylx666/bed@main/fanins/arti/';
-      cdnSwitch.textContent = '正在使用jsDelivr。若无法访问请点击切换为Github Raw。';
-      cdnSwitch.style.color = '#f63';
-
-      cdnSwitch.onclick = click1;
-
-    };
-
-  });
-
-  cdnSwitch.onselectstart = (e)=> {
-
-    e.preventDefault();
-    return false;
-
-  };
-
-  df.append(cdnSwitch);
-
   var info = document.createElement('p');
-  info.textContent = '233';
   df.append(info);
 
   var artiList = document.createElement('div');
   artiList.className = 'list';
   df.append(artiList);
 
-  function relist() {
+  req('/api/arti', (res)=> {
 
-    req(cdn + 'index.json', (res)=> {
+    var r = JSON.parse(res);
 
-      var r = JSON.parse(res);
+    artiList.textContent = '';
+    for(let i = 0; i < r.length; ++i) {
 
-      for(let i = 0; i < r.length; ++i) {
+      const div = document.createElement('div');
+      div.onclick = (function click1() {
 
-        const div = document.createElement('div');
+        div.onclick = null;
 
-        
-        r[i]
-      }
+        for(let i = 0; i < artiList.children.length; ++i) {
 
-    });
+          artiList.children[i].style.display = 'none';
 
-  }
-  relist();
+        }
+        div.style.display = null;
+        div.style.height = '465px';
+          
+        div.style.transform = 'rotateX(90deg)';
+        div.ontransitionend = ()=> {
 
+          div.ontransitionend = null;
 
+          div.style.transform = null;
+
+          div.textContent = '';
+
+          var c = {};
+          Object.assign(c, r[i]);
+
+          artiAbstract.idp.textContent = '文章id：' + c.id;
+          artiAbstract.mtime.textContent = '最后更新：' + c.time;
+          artiAbstract.ctime.textContent = '创建时间：' + c.ctime;
+
+          artiAbstract.titleInput.value = c.title;
+          artiAbstract.titleInput.onchange = ()=> {
+
+            c.title = artiAbstract.titleInput.value;
+
+          }
+
+          artiAbstract.abs.value = c.abstract;
+          artiAbstract.abs.onchange = ()=> {
+
+            c.abstract = artiAbstract.abs.value;
+
+          }
+
+          artiAbstract.author.value = c.author;
+          artiAbstract.author.onchange = ()=> {
+
+            c.author = artiAbstract.author.value;
+              
+          }
+          
+          artiAbstract.cover.value = c.cover ? c.cover : '';
+          artiAbstract.cover.onchange = ()=> {
+
+            c.cover = artiAbstract.cover.value;
+
+            artiAbstract.coverImg.src = 'https://cdn.jsdelivr.net/gh/Bylx666/bed@main/fanins/arti/asset/' + c.cover;
+
+          };
+          if(c.cover) {
+
+            artiAbstract.coverImg.src = 'https://cdn.jsdelivr.net/gh/Bylx666/bed@main/fanins/arti/asset/' + c.cover;
+
+          }
+          else{
+
+            artiAbstract.coverImg.src = '';
+
+          }
+          artiAbstract.top.value = c.top;
+
+          artiAbstract.fanhui.onclick = (e)=> {
+
+            e.stopPropagation();
+
+            for(let i = 0; i < artiList.children.length; ++i) {
+
+              artiList.children[i].style.display = null;
+
+            }
+            div.style.height = null;
+
+            appendP();
+
+            div.onclick = click1;
+
+          };
+
+          artiAbstract.save.onclick = ()=> {
+
+            c.top = artiAbstract.top.value;
+
+            req('/api/arti.js', {
+              admin: psw,
+              id: c.id,
+              c: c,
+            }, (res)=> {
+
+              if(res.modifiedCount) {
+
+                info.style.color = '#000';
+                info.textContent = '保存成功！';
+
+                r[i] = c;
+
+              }
+              else {
+
+                info.style.color = 'var(-wrong)';
+                if(res.error) {
+
+                  info.textContent = res.error;
+
+                }
+                else {
+
+                  info.textContent = '数据库未变动。';
+
+                }
+              }
+
+            }, 'json');
+
+          };
+
+          div.append(artiAbstract);
+
+        };
+
+      });
+
+      const appendP = (function() {
+
+        div.textContent = '';
+
+        const title = document.createElement('p');
+        title.textContent = r[i].title;
+        div.append(title);
+
+        const time = document.createElement('p');
+        time.textContent = r[i].time;
+        div.append(time);
+
+      });
+      appendP();
+
+      artiList.append(div);
+
+    }
+
+  });
+
+  var artiAbstract = document.createElement('div');
+  
+  artiAbstract.idp = document.createElement('p');
+  artiAbstract.append(artiAbstract.idp);
+
+  artiAbstract.mtime = document.createElement('p');
+  artiAbstract.append(artiAbstract.mtime);
+
+  artiAbstract.ctime = document.createElement('p');
+  artiAbstract.append(artiAbstract.ctime);
+
+  artiAbstract.titleInputP = document.createElement('p');
+  artiAbstract.titleInputP.textContent = '文章标题：';
+  artiAbstract.append(artiAbstract.titleInputP);
+
+  artiAbstract.titleInput = document.createElement('input');
+  artiAbstract.titleInputP.append(artiAbstract.titleInput);
+
+  artiAbstract.abs = document.createElement('textarea');
+  artiAbstract.abs.placeholder = '概述';
+  artiAbstract.append(artiAbstract.abs);
+
+  artiAbstract.authorP = document.createElement('p');
+  artiAbstract.authorP.textContent = '作者：';
+  artiAbstract.append(artiAbstract.authorP);
+
+  artiAbstract.author = document.createElement('input');
+  artiAbstract.authorP.append(artiAbstract.author);
+
+  artiAbstract.coverP = document.createElement('p');
+  artiAbstract.coverP.textContent = '文章封面图：fanins/arti/asset/ ';
+  artiAbstract.append(artiAbstract.coverP);
+
+  artiAbstract.cover = document.createElement('input');
+  artiAbstract.coverP.append(artiAbstract.cover);
+
+  artiAbstract.coverImg = document.createElement('img');
+  artiAbstract.coverImg.alt= '图像加载失败';
+  artiAbstract.append(artiAbstract.coverImg);
+
+  artiAbstract.top = subUI.createCheckbox('置顶文章', false);
+  artiAbstract.append(artiAbstract.top);
+
+  artiAbstract.fanhui = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
+  artiAbstract.fanhui.innerHTML = '<path d="M231.8 478.6c-16 16-16 41.9 0 57.9l388.6 388.6c16 16 41.9 16 57.9 0s16-41.9 0-57.9L289.7 478.6c-16-16-41.9-16-57.9 0z"></path><path d="M231.8 537.9c16 16 41.9 16 57.9 0l388.6-388.6c16-16 16-41.9 0-57.9s-41.9-16-57.9 0L231.8 480c-16 16-16 41.9 0 57.9z"></path>';
+  artiAbstract.fanhui.setAttribute('viewBox', '0 0 1024 1024');
+  artiAbstract.append(artiAbstract.fanhui);
+
+  artiAbstract.save = document.createElement('span');
+  artiAbstract.save.textContent = '保存';
+  artiAbstract.save.onselectstart = e=> {
+    
+    e.preventDefault();
+    e.stopPropagation();
+    return false;
+    
+  };
+  artiAbstract.append(artiAbstract.save);
 
   dfs.push(df);
 

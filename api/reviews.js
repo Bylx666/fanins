@@ -39,7 +39,7 @@ module.exports = (request, response)=>{
 
   }
 
-  client.connect(err => {
+  client.connect(()=> {
 
     var collection = client.db("reviews").collection(aid);
 

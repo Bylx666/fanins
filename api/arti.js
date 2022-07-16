@@ -33,9 +33,9 @@ module.exports = (req, res)=> {
     
         reqb = JSON.parse(reqb);
     
-        if(!reqb.admin===process.env.admin) {
+        if(reqb.admin!==process.env.admin) {
     
-          res.JSON({ 'error': '管理员密码不对哦♪' });
+          res.json({ 'error': '管理员密码不对哦♪' });
     
           return false;
     
